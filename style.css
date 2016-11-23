@@ -1,5 +1,7 @@
+/* ELEMENT STYLES */
 html {
-	font-size: 12px;	/* background: url(background.jpg) no-repeat center center fixed; triggered */
+	font-size: 12px;
+	background: url(background.jpg) no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -9,21 +11,39 @@ body {
 	font-family: "Helvetica Neue", monospace;
 	font-size: 12px;
 	font-style: normal;
-	font-variant: normal;	/* background-color: #13b6a9; triggered */
-	background-color: #9DBDC6;
+	font-variant: normal;
+	/* Jen's: background-color: #13b6a9;	 */
+	/* Justin's: background-color: #9DBDC6; */
+	background: none;
 }
+textarea {
+	float: left;
+	width: 95%;
+	height: 200px;
+	resize: none;
+	font-size: 18px;
+}
+h4{
+	font-weight: 800;
+}
+
+/* CLASSES */
+
 .registers {
-	height: 300px;
-	overflow-y: scroll;
+/* 	height: 320px;
+overflow-y: scroll; */
 }
 .code_segment {
-	height: 300px;
-	overflow-y: scroll;
+/* 	height: 320px;
+overflow-y: scroll; */
 }
 .data_segment {
-	height: 300px;
-	overflow-y: scroll;
+/* 	height: 320px;
+overflow-y: scroll; */
 }
+
+.button_group{}
+
 .save_button {
 	width: 50%;
 	box-shadow: none;
@@ -50,19 +70,22 @@ body {
 	text-align: center;
 	padding: 2px !important;
 }
-textarea {
-	float: left;
-	width: 95%;
-	height: 200px;
-	resize: none;
-}
 .bottom-buffer {
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 }
-.col-md-3{
-	border: 1px solid #ddd;
+.col-md-3 {
+	border: 1px dashed #333;
 }
-.standard_panel{
-	height: 300px;
+.standard_panel {
+	height: 320px;
 	overflow-y: scroll;
+}
+
+/* ID */
+#mips-log-area{
+	background-color: #333;
+	color: #ddd;
+}
+#mips-opcodes-area{
+	background-color: #ddd;
 }
