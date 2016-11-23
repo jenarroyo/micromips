@@ -1,66 +1,68 @@
 html {
-	font-size: 12px;
-	background: url(background.jpg) no-repeat center center fixed;
+	font-size: 12px;	/* background: url(background.jpg) no-repeat center center fixed; triggered */
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-
 }
-
-body{
-	font-family: "Lucida Console", monospace;
+body {
+	font-family: "Helvetica Neue", monospace;
 	font-size: 12px;
 	font-style: normal;
-	font-variant: normal;
-	background-color: #13b6a9;
+	font-variant: normal;	/* background-color: #13b6a9; triggered */
+	background-color: #9DBDC6;
 }
-.analyzebutton{
-width: 97%;
+.registers {
+	height: 300px;
+	overflow-y: scroll;
 }
-
-.registers{
-    height: 300px;
-    overflow-y: scroll;
+.code_segment {
+	height: 300px;
+	overflow-y: scroll;
 }
-.code_segment{
-    height: 300px;
-    overflow-y: scroll;
+.data_segment {
+	height: 300px;
+	overflow-y: scroll;
 }
-.data_segment{
-    height: 300px;
-    overflow-y: scroll;
+.save_button {
+	width: 50%;
+	box-shadow: none;
 }
-.savebutton{
-width: 50%;
-box-shadow: none;
+.header {
+	font-family: "Courier", monospace;
+	font-size: 40px;
+	font-weight: bold;
+	text-align: center;
+	height: 60px;
 }
-
-.header{
-font: Verdana, sans-serif;
-font-size: 40px;
-font-weight: bold;
-text-align: center;
-height: 60px;
+.table {
+	float: left;
+	border-collapse: collapse;
+	border-spacing: 5px;
 }
-
-.table{
-float: left;
-border-collapse: collapse;
-border-spacing: 5px;
-}
-
 .address {
-font-weight: bold;
-text-align: left;
-padding: 2px !important;
+	font-family: "Courier", monospace;
+	font-weight: bold;
+	text-align: left;
+	padding: 2px !important;
 }
-.binary{
-text-align:center;
-padding: 2px !important;
+.binary {
+	text-align: center;
+	padding: 2px !important;
 }
-textarea{
-float:left;
-width: 95%;
-height:705px;
+textarea {
+	float: left;
+	width: 95%;
+	height: 200px;
+	resize: none;
+}
+.bottom-buffer {
+	margin-bottom: 20px;
+}
+.col-md-3{
+	border: 1px solid #ddd;
+}
+.standard_panel{
+	height: 300px;
+	overflow-y: scroll;
 }
