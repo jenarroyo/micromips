@@ -11,5 +11,6 @@ Non-Priorities:
   
 # Technologies / Tools Used
   - MD Editor: Dillinger.io
-  - IDE/Text Editor: Sublime (with Emmet.IO & CSS Format) / Notepad++
+  - IDE/Text Editor: Sublime (+ Emmet.IO & CSS Format) / Notepad++
   - Languages: HTML, CSS, JS, ?PHP?
+  - Libraries/Frameworks: BootStrap CSS, JQuery for BootStrap
