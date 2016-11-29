@@ -2,7 +2,7 @@
 
 # To Do (as of 11-24-16)
 Priorities:
-  - Add correct logic for new instructions (DSUB, NOP, BNEZ)
+  - Add new logic for instructions (DSUBU, NOP, BNE)
   - Display opcode & error-log output to newly provided panels
   
 Non-Priorities:
