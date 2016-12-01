@@ -3,6 +3,7 @@
 # To Do (as of 11-24-16)
 Priorities:
   - Display OPCODE for J, DADDIU, SD
+  - Syntax check for DADDIU & SD
   
 # Technologies / Tools Used
   - MD Editor: Dillinger.io
