@@ -1,7 +1,7 @@
 /* ELEMENT STYLES */
 html {
 	font-size: 12px;
-	background: url(background.jpg) no-repeat center center fixed;
+	/* background: url(background.jpg) no-repeat center center fixed; */
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -12,19 +12,23 @@ body {
 	font-size: 12px;
 	font-style: normal;
 	font-variant: normal;
-	/* Jen's: background-color: #13b6a9;	 */
+	/* Jen's:  */background-color: /* #13b6a9; */ #229E8D;
 	/* Justin's: background-color: #9DBDC6; */
-	background: none;
+	/* background: none; */
 }
 textarea {
 	float: left;
 	width: 95%;
 	height: 200px;
 	resize: none;
-	font-size: 18px;
+	font-size: 12px;
 }
 h4{
 	font-weight: 800;
+}
+
+h1{
+	font-family: "Helvetica Neue", monospace;;
 }
 
 /* CLASSES */
@@ -73,8 +77,8 @@ overflow-y: scroll; */
 .bottom-buffer {
 	margin-bottom: 30px;
 }
-.col-md-3 {
-	border: 1px dashed #333;
+.col-md-3, .col-md-6 {
+	border: 1px solid #333;
 }
 .standard_panel {
 	height: 320px;
@@ -84,7 +88,9 @@ overflow-y: scroll; */
 /* ID */
 #mips-log-area{
 	background-color: #333;
-	color: #ddd;
+	/*color: #FFCCCC;*/
+	color: #dff0d8;
+	height: 300px;
 }
 #mips-opcodes-area{
 	background-color: #ddd;

@@ -3169,55 +3169,55 @@
     <!-- ERROR LOGS SEGMENT -->
     <div class="row bottom-buffer">
     <div class="col-md-3">
-        <h4>Error Logs Panel</h4>
+        <h4>Logs Panel</h4>
         <div class="panel_error standard_panel">
-            <textarea name="logarea" cols="" rows="" id="mips-log-area"></textarea>
+            <textarea name="logarea" cols="" rows="" id="mips-log-area" readonly></textarea>
         </div>
     </div>
 
     <!-- OPCODES SEGMENT -->
-    <div class="col-md-3">
+    <div class="col-md-6">
         <h4>OpCodes Panel</h4>
         <div class="panel_opcode standard_panel">
-            <textarea name="logarea" cols="" rows="" id="mips-opcodes-area"></textarea>
+            <textarea name="logarea" cols="" rows="" id="mips-opcodes-area" readonly></textarea>
         </div>
     </div>
 
     <!-- INTERNAL REGISTERS SEGMENT -->
     <div class="col-md-3">
-        <h4>Internal Registers Panel</h4>
+        <h4>(In Progress) Internal Regs</h4>
         <div class="panel_internal_registers standard_panel">
             <table class ="table">
                 <tr><td class="cycle_title">IF Cycle</td><td></td></tr>
-                <tr><td class="address">IF/ID.IR</td><td class="binary"><input type="text" id ="R1" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">IF/ID.NPC</td><td class="binary"><input type="text" id ="R2" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">IF.PC</td><td class="binary"><input type="text" id ="R3" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
+                <tr><td class="address">IF/ID.IR</td><td class="binary"><input type="text" id ="R1" maxlength="19" value="0000 0000 0000 0000" readonly /></td></tr>
+                <tr><td class="address">IF/ID.NPC</td><td class="binary"><input type="text" id ="R2" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">IF.PC</td><td class="binary"><input type="text" id ="R3" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                 <tr><td class="cycle_title">ID Cycle</td><td></td></tr>  
-                <tr><td class="address">ID/EX.IR</td><td class="binary"><input type="text" id ="R4" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">ID/EX.A</td><td class="binary"><input type="text" id ="R5" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">ID/EX.B</td><td class="binary"><input type="text" id ="R6" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">ID/EX.IMM</td><td class="binary"><input type="text" id ="R7" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
+                <tr><td class="address">ID/EX.IR</td><td class="binary"><input type="text" id ="R4" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">ID/EX.A</td><td class="binary"><input type="text" id ="R5" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">ID/EX.B</td><td class="binary"><input type="text" id ="R6" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">ID/EX.IMM</td><td class="binary"><input type="text" id ="R7" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                 <tr><td class="cycle_title">EX Cycle</td><td></td></tr>
-                <tr><td class="address">EX/MEM.IR</td><td class="binary"><input type="text" id ="R8" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">EX/MEM.ALUOUTPUT</td><td class="binary"><input type="text"   id ="R9" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">EX/MEM.B</td><td class="binary"><input type="text" id ="R10" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">EX/MEM.cond</td><td class="binary"><input type="text" id ="R11" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
+                <tr><td class="address">EX/MEM.IR</td><td class="binary"><input type="text" id ="R8" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">EX/MEM.ALUOUTPUT</td><td class="binary"><input type="text"   id ="R9" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">EX/MEM.B</td><td class="binary"><input type="text" id ="R10" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">EX/MEM.cond</td><td class="binary"><input type="text" id ="R11" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                 <tr><td class="cycle_title">MEM Cycle</td><td></td></tr>
-                <tr><td class="address">MEM/WB.IR</td><td class="binary"><input type="text" id ="R12" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">MEM/WB.ALUOUTPUT</td><td class="binary"><input type="text" id ="R13" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">MEM/WB.LMD</td><td class="binary"><input type="text" id ="R14" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
-                <tr><td class="address">MEM[ALUOUTPUT]</td><td class="binary"><input type="text" id ="R15" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
+                <tr><td class="address">MEM/WB.IR</td><td class="binary"><input type="text" id ="R12" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">MEM/WB.ALUOUTPUT</td><td class="binary"><input type="text" id ="R13" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">MEM/WB.LMD</td><td class="binary"><input type="text" id ="R14" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                <tr><td class="address">MEM[ALUOUTPUT]</td><td class="binary"><input type="text" id ="R15" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                 <tr><td class="cycle_title">WB Cycle</td><td></td></tr>        
-                <tr><td class="address">Registers affected</td><td class="binary"><input type="text" id ="R16" maxlength="19" value="0000 0000 0000 0000"/></td></tr>
+                <tr><td class="address">Registers affected</td><td class="binary"><input type="text" id ="R16" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
             </table>
         </div>
     </div>
-    <div class="col-md-3">
-        <h4>!Triggered Panel</h4>
+    <!-- <div class="col-md-3">
+        <h4>Temporary Panel</h4>
         <div class="panel_triggered standard_panel">
             
         </div>
-    </div>
+    </div> -->
 
     </div>
 

@@ -2,7 +2,7 @@
 
 // R-type instructions:  = Opcode (6) + rs (5) + rt (5) + rd (5) + (5) + func (16)
 // OR = ORI rt,rs,immediate = 001101 + rs + rt + immediate
-// DSUB = DSUB rd,rs,rt = 000000 + rs + rt + rd + 00000 + 101111 
+// DSUBU = DSUBU rd,rs,rt = 000000 + rs + rt + rd + 00000 + 101111 
 // SLT = SLT rd,rs,rt = 000000 + rs + rt + rd + 00000 + 101010
 // NOP = 0000 0000 0000 0000 0000 0000 0000 0000 
 
@@ -30,12 +30,12 @@
 
 /*	TODO for Milestone 1:
 *	Priorities
-*	- add correct logic for new instructions (DSUB, NOP, BNEZ)
+*	DONE- add correct logic for new instructions (DSUBU, NOP, BNEZ)
 *	- display opcode & error-log output to newly provided panels
 *
 *	Non-priorities
-*	- rename title of each panel
-*	- change to solid background?
+*	DONE- rename title of each panel
+*	DONE- change to solid background?
 */
 
 var R = new Array();
@@ -67,7 +67,7 @@ function save_register_values()
 		Rstring = "R".concat(i.toString());
 		R[i-1] = document.getElementById(Rstring).value.replace(/\s+/g, '');
 	}
-	alert(binary_to_decimal(R[30]));
+	// alert(binary_to_decimal(R[30]));
 }
 	
 function binary_to_decimal(string)
@@ -134,7 +134,7 @@ function binary_to_hex(string)
 
 function regex_check_syntax(string)
 {
-	var re = /^(L[0-9](:)(\s))?(OR|DSUB|SLT|NOP|BNE|LD|SD|DADDIU|J)\s((L[0-9]{1,2})|(R[0-9]{1,2}))(,\s((L[0-9]{1,2})|([0-9]{4}\((R[0-9]{1,2})\))|((R[0-9]{1,2})(,\s(R[0-9]{1,2}|\#[0-9A-F]{4}))?)))?$/m;
+	var re = /^(L[0-9](:)(\s))?(OR|DSUBU|SLT|NOP|BNE|LD|SD|DADDIU|J)\s((L[0-9]{1,2})|(R[0-9]{1,2}))(,\s((L[0-9]{1,2})|([0-9]{4}\((R[0-9]{1,2})\))|((R[0-9]{1,2})(,\s(R[0-9]{1,2}|\#[0-9A-F]{4}))?)))?$/m;
 	var check = re.exec(string);
 
 	return check;
@@ -297,7 +297,7 @@ function do_EX()
             var total = valueOfA + valueOfImm;
             currentCycle.EX_ALU = total + "";  
         } 
-        else if(EX_instr.operation == "DSUB")
+        else if(EX_instr.operation == "DSUBU")
         {
             var total = valueOfA - valueOfB;
             currentCycle.EX_ALU = total + "";
@@ -312,7 +312,8 @@ function do_EX()
             {
             	currentCycle.EX_cond = "0";
             }
-        } 
+        }
+        else if(EX_instr.operation == "NOP"){}
         
     } 
     else  if(EX_instr.MIPSOperation == "LOADSTORE")
@@ -430,7 +431,7 @@ function perform_OR(registerOne,registerTwo)
 {
 	return add_zeroes_left(decimal_to_binary(binary_to_decimal(registerOne) | binary_to_decimal(registerTwo)),16);	
 }
-function perform_SUB(registerOne,registerTwo) //TODO: Confirm logic
+function perform_SUBU(registerOne,registerTwo)
 {
 	return add_zeroes_left(decimal_to_binary(binary_to_decimal(registerOne) - binary_to_decimal(registerTwo)),16);	
 }
@@ -444,7 +445,7 @@ function perform_SLT(registerOne,registerTwo)
 }
 function perform_NOP()
 {
-
+	// Do nothing
 }
 
 // I-TYPE 
@@ -470,7 +471,7 @@ function perform_SD(register)
 {
 	return register;	
 }
-function perform_ADDI(register,offset)
+function perform_DADDIU(register,offset)
 {
 	return add_zeroes_left(decimal_to_binary(binary_to_decimal(register) + offset),16);	
 }
@@ -484,6 +485,8 @@ function perform_J(label)
 	
 function parse_code()
 {
+	var logsDiv = document.getElementById('mips-log-area');
+	save_register_values();
 	var text = document.getElementById("codearea").value;
 	var lines = text.split(/\r\n|\r|\n/g); //as if i figured this out by myself
 	var buffer = new Array();
@@ -492,6 +495,7 @@ function parse_code()
 	var validsyntax = true;
 	var current = "";
 	
+	logsDiv.value += "[INFO] (Code Analysis) In Progress.\n";
 	
 	//flush previous parsing
 	while(currentCycle.length)
@@ -536,7 +540,7 @@ function parse_code()
 		else 
 		{
 			validsyntax = false;
-			alert("'" + string + "' is not a valid syntax.");
+			logsDiv.value += "[ERROR] '" + string + "' is not a valid syntax.\n";
 		}
 		currentPC += 4;
 	}
@@ -561,7 +565,7 @@ function parse_code()
 				switch(tokens[4])
 				{
 					case "OR" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE","ALU"); break;
-					case "DSUB" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE", "ALU"); break;
+					case "DSUBU" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE", "ALU"); break;
 					case "SLT" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE","ALU"); break;
 					case "NOP" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE",""); break;
 
@@ -629,8 +633,9 @@ function parse_code()
 				{
 					case "OR": current += add_zeroes_left(decimal_to_binary("37"),6); break;
 					case "SLT": current += add_zeroes_left(decimal_to_binary("42"),6); break;
-					case "DSUB": current += add_zeroes_left(decimal_to_binary("47"),6); break;
-					default: ;
+					case "DSUBU": current += add_zeroes_left(decimal_to_binary("47"),6); break;
+					case "NOP": current+= add_zeroes_left(decimal_to_binary("0"), 6); break;
+					default: current+= add_zeroes_left(decimal_to_binary("0"), 6); break;
 				}
 				
 				currentoperation.binary = current;
@@ -708,10 +713,11 @@ function parse_code()
 					while(fillZeroes !== 0)
 					{
 						current += add_zeroes_left("0",4);
+						fillZeroes /= 4;
 					}
 					
 					for(var j = 0; j < offsetInt.length; j++)
-					{;
+					{
 						current += add_zeroes_left(decimal_to_binary(offsetInt[j]),4);
 					}
 					
@@ -755,7 +761,7 @@ function parse_code()
 					}
 					
 					for(var j = 0; j < offsetInt.length; j++)
-					{;
+					{
 						current += add_zeroes_left(decimal_to_binary(offsetInt[j]),4);
 					}
 					
@@ -780,7 +786,7 @@ function parse_code()
 	} 
 	else 
 	{
-		alert("Nothing to parse.");
+		logsDiv.value += "[INFO] (Code Analysis) Done. Nothing else to parse.\n";
 	}
 	
 	currentPC = 0;
@@ -823,7 +829,7 @@ function parse_code()
 			break;
 			case "BNE" :
 			newOperation.op = "BNE";
-			if(currentInstr.registersUsed[0] !== 0)
+			if(currentInstr.registersUsed[0] !== currentInstr.registersUsed[1])
 			{
 				var foundlabel = false;
 				var i = 0;
@@ -854,7 +860,7 @@ function parse_code()
 			newOperation.RS = currentInstr.registersUsed[0]; 
 			newOperation.preOp = currentInstr.registersUsed[1];
 		    newOperation.offset = currentInstr.binary.substring(12);
-			R[newOperation.preOp] = perform_ADDI(R[newOperation.RS],newOperation.offset); 
+			R[newOperation.preOp] = perform_DADDIU(R[newOperation.RS],newOperation.offset); 
 			newOperation.postOp = R[newOperation.preOp];
 			executionOutput.push(newOperation);
 			currentPC += 4;
@@ -904,14 +910,22 @@ function parse_code()
 			currentPC += 4;
 			i++;
 			break;
-			case "DSUB" :
-			newOperation.op = "DSUB";
+			case "DSUBU" :
+			newOperation.op = "DSUBU";
 			newOperation.RS = currentInstr.registersUsed[0];
 			newOperation.RT = currentInstr.registersUsed[1];
 			newOperation.preOp = currentInstr.registersUsed[2];
-			R[newOperation.preOp] = perform_SUB(R[newOperation.RS],R[newOperation.RT]);
+			R[newOperation.preOp] = perform_SUBU(R[newOperation.RS],R[newOperation.RT]);
 			newOperation.postOp = R[newOperation.preOp];
 			executionOutput.push(newOperation);
+			currentPC += 4;
+			i++;
+			break;
+			case "NOP" :
+			newOperation.op = "NOP";
+			newOperation.RS = currentInstr.registersUsed[0];
+			newOperation.RT = currentInstr.registersUsed[1];
+			newOperation.preOp = currentInstr.registersUsed[2];
 			currentPC += 4;
 			i++;
 			break;
@@ -927,13 +941,12 @@ function parse_code()
 
 function display_opcode_window()
 {
-	var opcodeWindow = window.open("", "OpCodeWindow", "width=500, height=300");
-	opcodeWindow.document.clear();
+	var div = document.getElementById('mips-opcodes-area');
+	// div.value = "";
 	
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		opcodeWindow.document.write(listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary);
-			opcodeWindow.document.write("<br>");
+		div.value = div.value + listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
 	}
 }
 
@@ -1054,7 +1067,10 @@ function display_output_window()
 			case "SLT" :
 			outputWindow.document.write(output.op + " -- Registers: R" + output.RS.toString() + " = " + binary_to_decimal(R[output.RS]) + " R" + output.RT.toString() + " = " + binary_to_decimal(R[output.RT]) + " -- Value " + binary_to_decimal(output.postOp) + " stored to R" + output.preOp.toString());
 			break;
-			case "DSUB" : 
+			case "DSUBU" : 
+			outputWindow.document.write(output.op + " -- Registers: R" + output.RS.toString() + " = " + binary_to_decimal(R[output.RS]) + " R" + output.RT.toString() + " = " + binary_to_decimal(R[output.RT]) + " -- Value " + binary_to_decimal(output.postOp) + " stored to R" + output.preOp.toString());
+			break;
+			case "NOP" : 
 			outputWindow.document.write(output.op + " -- Registers: R" + output.RS.toString() + " = " + binary_to_decimal(R[output.RS]) + " R" + output.RT.toString() + " = " + binary_to_decimal(R[output.RT]) + " -- Value " + binary_to_decimal(output.postOp) + " stored to R" + output.preOp.toString());
 			break;
 		}
