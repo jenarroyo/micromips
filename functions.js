@@ -142,10 +142,13 @@ function regex_check_syntax(string)
 
 function get_reg_num(string)
 {
-	var newstr = string.replace("R","");
-	newstr = newstr.replace(",","");
-	
-	return parseInt(newstr);
+	if(string !== undefined){
+		var newstr = string.replace("R","");
+		newstr = newstr.replace(",","");
+		return parseInt(newstr);
+	}
+	return "";
+
 }
 
 function Cycle(instructions)
@@ -460,9 +463,13 @@ function perform_LD(register,offset)
 	var i = 0;
 	while(!foundmemory)
 	{
-		if(memoryList[i].address == (parseInt(binary_to_decimal(register)) + parseInt(offset)).toString())
-		{
-			return memoryList[i].value;
+		if(memoryList.length > 0){
+			if(memoryList[i].address == (parseInt(binary_to_decimal(register)) + parseInt(offset)).toString())
+			{
+				return memoryList[i].value;
+			}
+		}else{
+			return -1;
 		}
 	}
 	return -1;
@@ -535,6 +542,7 @@ function parse_code()
 			{
 				var tokens = string.split(" ");
 				var label = new Label(tokens[0].replace(":",""),currentPC);
+				labels.push(label);
 			}
 		} 
 		else 
@@ -703,7 +711,6 @@ function parse_code()
 					currentoperation.registerDestination = get_reg_num(tokens[5]);
 				
 					//offset
-					
 					var offsetInt = tokens[16].replace("#","");
 					
 					offsetInt = offsetInt.split("");	
@@ -935,7 +942,7 @@ function parse_code()
 		
 	}
 	
-	alert("Successfully parsed "+ listofInstructions.length + " lines of instructions");
+	logsDiv.value += "[INFO] Successfully parsed "+ listofInstructions.length + " lines of instructions \n";
 
 }
 
@@ -946,7 +953,7 @@ function display_opcode_window()
 	
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		div.value = div.value + listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
+		div.value = /*div.value + */listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
 	}
 }
 
@@ -1029,7 +1036,7 @@ function display_pipeline_window()
 
 function display_output_window()
 {
-	var outputWindow = window.open("", "OutputWindow", "width=700, height=400");
+	/*var outputWindow = window.open("", "OutputWindow", "width=700, height=400");
 	
 	var currentInstr;
 	
@@ -1076,8 +1083,10 @@ function display_output_window()
 		}
 		outputWindow.document.write("<br>");
 		i++;
-	}
+	}*/
 			
+	var logsDiv = document.getElementById('mips-log-area');
+	logsDiv.value = "";
 }
 
 function display_registers_window()

@@ -2,13 +2,7 @@
 
 # To Do (as of 11-24-16)
 Priorities:
-  - Add new logic for instructions (DSUBU, NOP, BNE)
-  - Display opcode & error-log output to newly provided panels
-  
-Non-Priorities:
-  - Rename title of each panel
-  - Change to solid background?
-  
+- Display OPCODE for J, DADDIU, SD
 # Technologies / Tools Used
   - MD Editor: Dillinger.io
   - IDE/Text Editor: Sublime (+ Emmet.IO & CSS Format) / Notepad++
