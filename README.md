@@ -2,14 +2,14 @@
 
 # To Do (as of 11-24-16)
 Priorities:
-  - Display OPCODE for J, DADDIU, SD
-  - Syntax check for DADDIU & SD
-  - Pipeline Map (+ Display Instructions and Allow Horizontal Scroll for Cycles)
-  - Add GOTO Memory Address Feature for Data Segment
-  - (Optional) Replace Memory Addresses with labels
-  - Choose either Code Segment / Opcode Panel (Preferred)
-  - Registers: Add validation for invalid hex values
-  - Write a simulator program using pipeline. Simulator should support (a) single-step instruction execution mode and (b) full execution mode
+  1. Display OPCODE for J, DADDIU, SD
+  2. Syntax check for DADDIU & SD
+  3. Pipeline Map (+ Display Instructions and Allow Horizontal Scroll for Cycles)
+  4. Add GOTO Memory Address Feature for Data Segment
+  5. (Optional) Replace Memory Addresses with labels
+  6. Choose either Code Segment / Opcode Panel (Preferred)
+  7. Registers: Add validation for invalid hex values
+  8. Write a simulator program using pipeline. Simulator should support (a) single-step instruction execution mode and (b) full execution mode
   
 # Technologies / Tools Used
   - MD Editor: Dillinger.io
