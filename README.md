@@ -2,7 +2,8 @@
 
 # To Do (as of 11-24-16)
 Priorities:
-- Display OPCODE for J, DADDIU, SD
+  - Display OPCODE for J, DADDIU, SD
+  
 # Technologies / Tools Used
   - MD Editor: Dillinger.io
   - IDE/Text Editor: Sublime (+ Emmet.IO & CSS Format) / Notepad++
