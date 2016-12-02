@@ -1,6 +1,6 @@
 # MicroMIPS
 
-# To Do (as of 11-24-16)
+# To Do (as of 12-02-16)
 Priorities:
   1. Display OPCODE for J, DADDIU, SD
   2. Syntax check for DADDIU & SD
