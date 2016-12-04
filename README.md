@@ -8,3 +8,4 @@
   - IDE/Text Editor: Sublime (+ Emmet.IO & CSS Format) / Notepad++
   - Languages: HTML, CSS, JS, ?PHP?
   - Libraries/Frameworks: BootStrap CSS, JQuery for BootStrap
+  - Trello
