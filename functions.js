@@ -953,7 +953,7 @@ function display_opcode_window()
 	
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		div.value = /*div.value + */listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
+		div.value = div.value + listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
 	}
 }
 
