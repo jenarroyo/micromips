@@ -916,7 +916,7 @@ function parse_code()
 			executionOutput.push(newOperation);
 			currentPC += 4;
 			i++;
-			break;
+			break; 
 			case "DSUBU" :
 			newOperation.op = "DSUBU";
 			newOperation.RS = currentInstr.registersUsed[0];
@@ -959,10 +959,10 @@ function display_opcode_window()
 
 function display_pipeline_window()
 {
-	var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
+	// var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
 
- 	pipelineWindow.document.clear();
-
+ 	// pipelineWindow.document.clear();
+ 	var div = document.getElementById('panel_pipeline');
 	var instr = listofInstructions;
 	var currentop = executionOutput;
 	
@@ -1003,9 +1003,8 @@ function display_pipeline_window()
      		}
   		}
 		
-		for(var j = 0; j < cellcount - decreasecells; j++)
+		for(var j=0; j < cellcount - decreasecells; j++)
 		{
-   		
 			switch(instr[i].currentState)
 			{
 				case "" : instr[i].currentState = "IF"; break;
@@ -1016,7 +1015,6 @@ function display_pipeline_window()
 				case "WB": instr[i].currentState = " "; break;
 				default: break;
 			}
-
 
 			map += "<td width = '30px'>" + instr[i].currentState + "</td>";
 		}
@@ -1031,7 +1029,10 @@ function display_pipeline_window()
 		map += "</tr>";
 	}
 	
-	pipelineWindow.document.write(map);
+	div.value = map;
+	// pipelineWindow.document.write(map);
+
+
 }
 
 function display_output_window()
