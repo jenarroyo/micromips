@@ -1019,17 +1019,22 @@ function display_pipeline_window()
 			map += "<td width = '30px'>" + instr[i].currentState + "</td>";
 		}
 		
-		if(currentop[i].op == "BNE" || currentop[i].op == "J")
-		{
-			i = currentop.PC/4;
+		if(currentop[i] !== undefined && currentop[i].op !== undefined){
+			if(currentop[i].op == "BNE" || currentop[i].op == "J")
+			{
+				i = currentop.PC/4;
+			}
+			else
+			{
+				i++;
+			}	
 		}
-		else i++;
 		
 		decreasecells++;
 		map += "</tr>";
 	}
 	
-	div.value = map;
+	div.innerHTML=map;
 	// pipelineWindow.document.write(map);
 
 
