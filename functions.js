@@ -28,16 +28,6 @@
 *
 */
 
-/*	TODO for Milestone 1:
-*	Priorities
-*	DONE- add correct logic for new instructions (DSUBU, NOP, BNEZ)
-*	- display opcode & error-log output to newly provided panels
-*
-*	Non-priorities
-*	DONE- rename title of each panel
-*	DONE- change to solid background?
-*/
-
 var R = new Array();
 var Rstring;
 var listofInstructions = new Array();
@@ -47,8 +37,7 @@ var memoryList = new Array();
 var currentCycle = new Cycle();
 var executionOutput = new Array();
 
-// save_register_values();
-
+/** Utility Functions */
 function add_zeroes_left(n, totalDigits)
 {
     if(!totalDigits){
@@ -60,16 +49,6 @@ function add_zeroes_left(n, totalDigits)
     return n;
 }
 
-function save_register_values()
-{
-	for(var i = 1; i <= 31; i++)
-	{
-		Rstring = "R".concat(i.toString());
-		R[i-1] = document.getElementById(Rstring).value.replace(/\s+/g, '');
-	}
-	// alert(binary_to_decimal(R[30]));
-}
-	
 function binary_to_decimal(string)
 {
 	string = string.replace(/\s+/g, '');
@@ -107,7 +86,7 @@ function binary_to_hex(string)
 			hex += " ";
 		}
 		switch(block)
-	{
+		{
 			case "0000": hex += "0"; break;
 			case "0001": hex += "1"; break;
 			case "0010": hex += "2"; break;
@@ -147,10 +126,23 @@ function get_reg_num(string)
 		newstr = newstr.replace(",","");
 		return parseInt(newstr);
 	}
-	return "";
 
+	return "";
 }
 
+function save_register_values()
+{
+	for(var i = 1; i <= 31; i++)
+	{
+		Rstring = "R".concat(i.toString());
+		R[i-1] = document.getElementById(Rstring).value.replace(/\s+/g, '');
+	}
+	// alert(binary_to_decimal(R[30]));
+}
+
+/*End of Utility Functions */
+
+/** Data Containers */
 function Cycle(instructions)
 {
 	var IF_TR = "", IF_NPC = "", PC = "0";
@@ -163,8 +155,6 @@ function Cycle(instructions)
 	
 	registers = new Array();
 	this.instructions = instructions;
-
-	
 }
 
 function Label(label,PC)
@@ -179,7 +169,7 @@ function Memory(address,value)
 	this.value = value;
 }	
 
-function exec_output()
+function ExecutionOutput()
 {
 	var op = "";
 	var RS = "";
@@ -190,7 +180,7 @@ function exec_output()
 	var label = "none";
 }
 
-function Instruct_Data(operation, type, MIPSOperation)
+function InstructData(operation, type, MIPSOperation)
 {
 	this.operation = operation;
 	this.type = type;
@@ -203,7 +193,9 @@ function Instruct_Data(operation, type, MIPSOperation)
 	var registersUsed;
 	var registerDestination = "";
 }
+/** End of Data Containers */
 
+/** MIPS Cycles */
 function do_IF()
 {
 	var previousCycle = cycleList[cycleList.length() - 1];
@@ -221,11 +213,9 @@ function do_IF()
 	currentCycle.IF_instr = instr;
 	
 	// IF/ID.IR <- Mem[PC]
-	
 	currentCycle.IF_IR =  binary_to_hex(instr.binary);
 	
 	// IF/ID.NPC, PC <- (if EX/MEM cond {EX/MEM.ALUOutput} else {PC+4}
-	
 	if(currentCycle.EX_cond == "0")
 	{
 		currentCycle.IF_NPC = add_zeroes_left(binary_to_hex(decimal_to_binary(toString(currentPC))),16);
@@ -234,7 +224,6 @@ function do_IF()
 	{
 		currentCycle.IF_NPC = previousCycle.EX_ALU;
 	}
-	
 }
 
 function do_ID()
@@ -260,7 +249,6 @@ function do_ID()
         
     // ID/EX.IR <- IF/ID.IR
     currentCycle.ID_IR = previousCycle.IF_IR;
-	
 }
 
 function do_EX()
@@ -391,7 +379,7 @@ function do_MEM()
 	} 
 	else 
 	{
-		;
+
 	}
 }
 
@@ -424,11 +412,11 @@ function do_WB()
     else 
     {
          /*** ELSE ***/
-        
     }
 }
+/** End of MIPS Cycles */
 
-// COMMANDS LIST (SET B)
+/** COMMANDS LIST (SET B) */
 // R-TYPE
 function perform_OR(registerOne,registerTwo)
 {
@@ -488,83 +476,79 @@ function perform_J(label)
 {
 	return label;	
 }
-// END OF COMMANDS LIST
-	
+/** END OF COMMANDS LIST */
+
+// function to analyze code
 function parse_code()
 {
-	var logsDiv = document.getElementById('mips-log-area');
-	save_register_values();
-	var text = document.getElementById("codearea").value;
-	var lines = text.split(/\r\n|\r|\n/g); //as if i figured this out by myself
+	var logsDiv = document.getElementById('mips-log-area'); // grab div containing logs
+	save_register_values(); // save register values entered by user
+	var text = document.getElementById("codearea").value; // grab code from code area
+	var lines = text.split(/\r\n|\r|\n/g); //as if i figured this out by myself... (JG: Did you? :>)
 	var buffer = new Array();
 	var instruction = new Array();
 	var currentPC = 0;
-	var validsyntax = true;
+	var isValidSyntax = true;
 	var current = "";
 	
 	logsDiv.value += "[INFO] (Code Analysis) In Progress.\n";
 	
-	//flush previous parsing
+	// house keeping: flush previous parsing
 	while(currentCycle.length)
 	{
-		currentCycle.pop()
+		currentCycle.pop();
 	}
-	
 	while(listofInstructions.length)
 	{
-		listofInstructions.pop()
+		listofInstructions.pop();
 	}
-	
 	while(executionOutput.length)
 	{
-		executionOutput.pop()
+		executionOutput.pop();
 	}
 		
-		
+	// populate new list of instructions
 	for(var i = 0; i < lines.length; i++)
 	{
 		instruction.push(lines[i]);
 	}
 	
+	// turn stack upside-down
 	while(buffer.length)
 	{
-		instruction.push(buffer.pop()); // turn stack upside-down
+		instruction.push(buffer.pop()); 
 	}
 	
 	// get labels
-	
 	for (var i = 0; i < instruction.length; i++)
 	{
 		var string = instruction[i];
-		if(regex_check_syntax(string) && validsyntax)
+		if(regex_check_syntax(string) && isValidSyntax)
 		{
 			if(string.indexOf(':') != - 1)
 			{
 				var tokens = string.split(" ");
-				var label = new Label(tokens[0].replace(":",""),currentPC);
+				var label = new Label(tokens[0].replace(":",""), currentPC); // get Label: value and corresponding PC
 				labels.push(label);
 			}
 		} 
 		else 
 		{
-			validsyntax = false;
+			isValidSyntax = false;
 			logsDiv.value += "[ERROR] '" + string + "' is not a valid syntax.\n";
 		}
 		currentPC += 4;
 	}
-	
-	currentPC = 0;
-		
-	// get instructions and give type
-	
-	if(validsyntax)
+	currentPC = 0; // reset counter
+
+
+	// once all instructions are successfully parsed, get instructions and type of each
+	if(isValidSyntax)
 	{
-	
 		for (var i = 0; i < instruction.length; i++)
 		{
 			current = "";
 			var currentoperation;
-			
 			var string = instruction[i];
 			var tokens = regex_check_syntax(string);		
 			
@@ -572,24 +556,23 @@ function parse_code()
 			{	
 				switch(tokens[4])
 				{
-					case "OR" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE","ALU"); break;
-					case "DSUBU" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE", "ALU"); break;
-					case "SLT" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE","ALU"); break;
-					case "NOP" : currentoperation = new Instruct_Data(tokens[4], "R-TYPE",""); break;
+					case "OR" : currentoperation = new InstructData(tokens[4], "R-TYPE","ALU"); break;
+					case "DSUBU" : currentoperation = new InstructData(tokens[4], "R-TYPE", "ALU"); break;
+					case "SLT" : currentoperation = new InstructData(tokens[4], "R-TYPE","ALU"); break;
+					case "NOP" : currentoperation = new InstructData(tokens[4], "R-TYPE",""); break;
 
-					case "BNE" : currentoperation = new Instruct_Data(tokens[4], "I-TYPE","BRANCH"); break;
-					case "LD" : currentoperation = new Instruct_Data(tokens[4], "I-TYPE","LOADSTORE"); break;
-					case "SD" : currentoperation = new Instruct_Data(tokens[4], "I-TYPE","LOADSTORE"); break;
-					case "DADDIU" : currentoperation = new Instruct_Data(tokens[4], "I-TYPE","ALU"); break;
+					case "BNE" : currentoperation = new InstructData(tokens[4], "I-TYPE","BRANCH"); break;
+					case "LD" : currentoperation = new InstructData(tokens[4], "I-TYPE","LOADSTORE"); break;
+					case "SD" : currentoperation = new InstructData(tokens[4], "I-TYPE","LOADSTORE"); break;
+					case "DADDIU" : currentoperation = new InstructData(tokens[4], "I-TYPE","ALU"); break;
 
-					case "J" : currentoperation = new Instruct_Data(tokens[4],"J-TYPE","NEITHER"); break;
+					case "J" : currentoperation = new InstructData(tokens[4],"J-TYPE","NEITHER"); break;
 				}
 			}
 			
-			currentoperation.registersUsed = new Array();
+			currentoperation.registersUsed = new Array(); // reset/init registersUsed
 			
-			// INTERPRET
-			
+			// INTERPRET Instructions
 			if(currentoperation.type === "J-TYPE")
 			{
 				current += "000010";
@@ -605,15 +588,11 @@ function parse_code()
 					reference /= 4;
 					
 					current += add_zeroes_left(decimal_to_binary(reference), 26);
-					
 				}
 				
 				currentoperation.binary = current;
-				
 				currentoperation.PC = currentPC;
-				
 				currentoperation.currentState = "";
-				
 				listofInstructions.push(currentoperation);
 			}
 			
@@ -647,11 +626,8 @@ function parse_code()
 				}
 				
 				currentoperation.binary = current;
-				
 				currentoperation.PC = currentPC;
-				
 				currentoperation.currentState = "";
-				
 				listofInstructions.push(currentoperation);
 				
 			}
@@ -676,7 +652,6 @@ function parse_code()
 					current += "00000";
 					
 					// label
-					
 					currentoperation.label = tokens[9];
 					var reference = parseInt(tokens[9].replace("L",""));
 					
@@ -691,11 +666,8 @@ function parse_code()
 					}
 					
 					currentoperation.binary = current;
-					
 					currentoperation.PC = currentPC;
-					
 					currentoperation.currentState = "";
-				
 					listofInstructions.push(currentoperation);
 					
 				}
@@ -729,11 +701,8 @@ function parse_code()
 					}
 					
 					currentoperation.binary = current;
-					
 					currentoperation.PC = currentPC;
-					
 					currentoperation.currentState = "";
-				
 					listofInstructions.push(currentoperation);					
 				}
 				
@@ -773,11 +742,8 @@ function parse_code()
 					}
 					
 					currentoperation.binary = current;
-					
 					currentoperation.currentState = "";
-					
 					currentoperation.PC = currentPC;
-				
 					listofInstructions.push(currentoperation);
 				}
 						
@@ -787,57 +753,37 @@ function parse_code()
 			currentCycle.IF_instr = instruction[i];
 			cycleList.push(currentCycle);
 			currentPC += 4;
-			
 		}
-		
 	} 
 	else 
 	{
 		logsDiv.value += "[INFO] (Code Analysis) Done. Nothing else to parse.\n";
 	}
-	
-	currentPC = 0;
 	//alert("listofInstructions.length : " + listofInstructions.length);
+	logsDiv.value += "[INFO] Successfully parsed "+ listofInstructions.length + " lines of instructions \n";
 	
-	// execute instructions
+	// execute instructions after parsing
+	execute_mips_code(listofInstructions);
 	
+}
+
+// function to execute code (Run, Forrest, Run!)
+function execute_mips_code(listofInstructions){
+	var currentPC = 0;
 	var i = 0;
-	var stillRunning = true;
+	var stillRunning = true; // Run, Forrest, Run!
 	
 	while(currentPC == 0 || currentPC <= listofInstructions[listofInstructions.length - 1].PC)
 	{
 		//alert("currentPC : " + currentPC + " listofInstructions[listofInstructions.length - 1].PC : " + listofInstructions[listofInstructions.length - 1].PC);
 		var currentInstr = listofInstructions[i];
-		//alert(currentInstr);
-		var newOperation = new exec_output();
+		var newOperation = new ExecutionOutput();
 		var memory;
 		
-
 		switch(currentInstr.operation)
 		{
 			case "J" : 
-			newOperation.op = "J";
-			var foundlabel = false;
-				var i = 0;
-				var label;
-				while(!foundlabel)
-				{
-					if(labels[i].label == currentInstr.label)
-					{
-						foundlabel = true;
-						label = labels[i];
-						newOperation.label = label;
-					}
-					i++;
-				}
-			i = label.PC/4;
-			currentPC = label.PC;
-			executionOutput.push(newOperation);
-			break;
-			case "BNE" :
-			newOperation.op = "BNE";
-			if(currentInstr.registersUsed[0] !== currentInstr.registersUsed[1])
-			{
+				newOperation.op = "J";
 				var foundlabel = false;
 				var i = 0;
 				var label;
@@ -851,101 +797,120 @@ function parse_code()
 					}
 					i++;
 				}
-
 				i = label.PC/4;
 				currentPC = label.PC;
-			}
-			else
-			{
-				i++;
-				currentPC += 4;
-			}
-			executionOutput.push(newOperation);
-			break;
-			case "DADDIU" : 
-			newOperation.op = "DADDIU";
-			newOperation.RS = currentInstr.registersUsed[0]; 
-			newOperation.preOp = currentInstr.registersUsed[1];
-		    newOperation.offset = currentInstr.binary.substring(12);
-			R[newOperation.preOp] = perform_DADDIU(R[newOperation.RS],newOperation.offset); 
-			newOperation.postOp = R[newOperation.preOp];
-			executionOutput.push(newOperation);
-			currentPC += 4;
-			i++;
-			break;
-			case "LD" : 
-			newOperation.op = "LD";
-			newOperation.RS = currentInstr.registersUsed[0]; 
-			newOperation.RT = currentInstr.registersUsed[1];
-		    newOperation.offset = currentInstr.binary.substring(12);
-			R[newOperation.RT] = perform_LD(R[newOperation.RS],newOperation.offset); 
-			newOperation.postOp = R[newOperation.preOp];
-			executionOutput.push(newOperation);
-			currentPC += 4;
-			i++;
-			break;
-			case "SD" :
-			newOperation.op = "SD";
-			newOperation.RS = currentInstr.registersUsed[0]; 
-			newOperation.RT = currentInstr.registersUsed[1];
-		    newOperation.offset = currentInstr.binary.substring(12);
-			memory = new Memory((parseInt(offset) + parseInt(R[newOperation.RS])).toString(),R[newOperation.RT]); 
-			memoryList.push(memory);
-			executionOutput.push(newOperation);
-			currentPC += 4;
-			i++;
-			break;
-			case "OR" :
-			newOperation.op = "OR";
-			newOperation.RS = currentInstr.registersUsed[0];
-			newOperation.RT = currentInstr.registersUsed[1];
-			newOperation.preOp = currentInstr.registersUsed[2];
-			R[newOperation.preOp] = perform_OR(R[newOperation.RS],R[newOperation.RT]);
-			newOperation.postOp = R[newOperation.preOp];
-			executionOutput.push(newOperation);
-			currentPC += 4;
-			i++;
-			break;
-			case "SLT" : 
-			newOperation.op = "SLT";
-			newOperation.RS = currentInstr.registersUsed[0];
-			newOperation.RT = currentInstr.registersUsed[1];
-			newOperation.preOp = currentInstr.registersUsed[2];
-			R[newOperation.preOp] = perform_SLT(R[newOperation.RS],R[newOperation.RT]);
-			newOperation.postOp = R[newOperation.preOp];
-			executionOutput.push(newOperation);
-			currentPC += 4;
-			i++;
-			break; 
-			case "DSUBU" :
-			newOperation.op = "DSUBU";
-			newOperation.RS = currentInstr.registersUsed[0];
-			newOperation.RT = currentInstr.registersUsed[1];
-			newOperation.preOp = currentInstr.registersUsed[2];
-			R[newOperation.preOp] = perform_SUBU(R[newOperation.RS],R[newOperation.RT]);
-			newOperation.postOp = R[newOperation.preOp];
-			executionOutput.push(newOperation);
-			currentPC += 4;
-			i++;
-			break;
-			case "NOP" :
-			newOperation.op = "NOP";
-			newOperation.RS = currentInstr.registersUsed[0];
-			newOperation.RT = currentInstr.registersUsed[1];
-			newOperation.preOp = currentInstr.registersUsed[2];
-			currentPC += 4;
-			i++;
-			break;
-		}
-				
-		
-		
-	}
-	
-	logsDiv.value += "[INFO] Successfully parsed "+ listofInstructions.length + " lines of instructions \n";
+				executionOutput.push(newOperation);
+				break;
+			case "BNE" :
+				newOperation.op = "BNE";
+				if(currentInstr.registersUsed[0] !== currentInstr.registersUsed[1])
+				{
+					var foundlabel = false;
+					var i = 0;
+					var label;
+					while(!foundlabel)
+					{
+						if(labels[i].label == currentInstr.label)
+						{
+							foundlabel = true;
+							label = labels[i];
+							newOperation.label = label;
+						}
+						i++;
+					}
 
+					i = label.PC/4;
+					currentPC = label.PC;
+				}
+				else
+				{
+					i++;
+					currentPC += 4;
+				}
+				executionOutput.push(newOperation);
+				break;
+			case "DADDIU" : 
+				newOperation.op = "DADDIU";
+				newOperation.RS = currentInstr.registersUsed[0]; 
+				newOperation.preOp = currentInstr.registersUsed[1];
+			    newOperation.offset = currentInstr.binary.substring(12);
+				R[newOperation.preOp] = perform_DADDIU(R[newOperation.RS],newOperation.offset); 
+				newOperation.postOp = R[newOperation.preOp];
+				executionOutput.push(newOperation);
+				currentPC += 4;
+				i++;
+				break;
+			case "LD" : 
+				newOperation.op = "LD";
+				newOperation.RS = currentInstr.registersUsed[0]; 
+				newOperation.RT = currentInstr.registersUsed[1];
+			    newOperation.offset = currentInstr.binary.substring(12);
+				R[newOperation.RT] = perform_LD(R[newOperation.RS],newOperation.offset); 
+				newOperation.postOp = R[newOperation.preOp];
+				executionOutput.push(newOperation);
+				currentPC += 4;
+				i++;
+				break;
+			case "SD" :
+				newOperation.op = "SD";
+				newOperation.RS = currentInstr.registersUsed[0]; 
+				newOperation.RT = currentInstr.registersUsed[1];
+			    newOperation.offset = currentInstr.binary.substring(12);
+				memory = new Memory((parseInt(offset) + parseInt(R[newOperation.RS])).toString(),R[newOperation.RT]); 
+				memoryList.push(memory);
+				executionOutput.push(newOperation);
+				currentPC += 4;
+				i++;
+				break;
+			case "OR" :
+				newOperation.op = "OR";
+				newOperation.RS = currentInstr.registersUsed[0];
+				newOperation.RT = currentInstr.registersUsed[1];
+				newOperation.preOp = currentInstr.registersUsed[2];
+				R[newOperation.preOp] = perform_OR(R[newOperation.RS],R[newOperation.RT]);
+				newOperation.postOp = R[newOperation.preOp];
+				executionOutput.push(newOperation);
+				currentPC += 4;
+				i++;
+				break;
+			case "SLT" : 
+				newOperation.op = "SLT";
+				newOperation.RS = currentInstr.registersUsed[0];
+				newOperation.RT = currentInstr.registersUsed[1];
+				newOperation.preOp = currentInstr.registersUsed[2];
+				R[newOperation.preOp] = perform_SLT(R[newOperation.RS],R[newOperation.RT]);
+				newOperation.postOp = R[newOperation.preOp];
+				executionOutput.push(newOperation);
+				currentPC += 4;
+				i++;
+				break; 
+			case "DSUBU" :
+				newOperation.op = "DSUBU";
+				newOperation.RS = currentInstr.registersUsed[0];
+				newOperation.RT = currentInstr.registersUsed[1];
+				newOperation.preOp = currentInstr.registersUsed[2];
+				R[newOperation.preOp] = perform_SUBU(R[newOperation.RS],R[newOperation.RT]);
+				newOperation.postOp = R[newOperation.preOp];
+				executionOutput.push(newOperation);
+				currentPC += 4;
+				i++;
+				break;
+			case "NOP" :
+				newOperation.op = "NOP";
+				newOperation.RS = currentInstr.registersUsed[0];
+				newOperation.RT = currentInstr.registersUsed[1];
+				newOperation.preOp = currentInstr.registersUsed[2];
+				currentPC += 4;
+				i++;
+				break;
+			default:
+				// do nothing if no cases matched
+		}
+	}
 }
 
+/** Display Functions */
+// former opcode window display
 function display_opcode_window()
 {
 	var div = document.getElementById('mips-opcodes-area');
@@ -957,6 +922,7 @@ function display_opcode_window()
 	}
 }
 
+// former pipeline
 function display_pipeline_window()
 {
 	// var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
@@ -966,7 +932,7 @@ function display_pipeline_window()
 	var instr = listofInstructions;
 	var currentop = executionOutput;
 	
-	var map = "<table border = '1'>";
+	var map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
 	
  	 //displays cycle counts
 	map += "<tr>";
@@ -1036,8 +1002,6 @@ function display_pipeline_window()
 	
 	div.innerHTML=map;
 	// pipelineWindow.document.write(map);
-
-
 }
 
 function display_output_window()
@@ -1120,3 +1084,4 @@ function display_registers_window()
 	map += "</tr>";
 	registerswindow.document.write(map);
 }
+/** End of Display Functions */
