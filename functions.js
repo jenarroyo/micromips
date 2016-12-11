@@ -71,6 +71,35 @@ function decimal_to_binary(string)
 	return parseInt(string,10).toString(2);
 }
 
+function pwettify(string){
+	var newString = string;
+	var block;
+	var i = 0;
+	var start = 0;
+	var end = 4;
+	if(newString !== undefined)
+	{
+		newString = "";
+		while(i < 8)
+		{
+			block = string.substring(start,end);
+			if(i % 4 === 0)
+			{
+				newString += " ";
+			}
+
+			newString += block;
+
+			start += 4;
+			end += 4;
+			i++;
+		}
+
+		return newString;
+	}
+	return newString;
+}
+
 function binary_to_hex(string)
 {
 	var block;
@@ -699,6 +728,7 @@ function display_pipeline_window()
 
 	decreasecells = 1;
 	var i = 0;
+	// step here
 	while(i < listofInstructions.length)
 	{
 		map += "<tr>";
@@ -720,16 +750,54 @@ function display_pipeline_window()
      		}
   		}
 		
+  		var IF_ID_IR = document.getElementById('IF_ID_IR');
+  		var IF_ID_NPC = document.getElementById('IF_ID_NPC');
+  		var IF_PC = document.getElementById('IF_PC');
+
+  		var ID_EX_A = document.getElementById('ID_EX_A');
+  		var ID_EX_B = document.getElementById('ID_EX_B');
+  		var ID_EX_IMM = document.getElementById('ID_EX_IMM =');
+  		var ID_EX_IR = document.getElementById('ID_EX_IR');
+  		var ID_EX_NPC = document.getElementById('ID_EX_NPC');
+
+  		var EX_MEM_ALU = document.getElementById('EX_MEM_ALU');
+  		var EX_MEM_COND = document.getElementById('EX_MEM_COND');
+  		var EX_MEM_IR = document.getElementById('EX_MEM_IR');
+  		var EX_MEM_B = document.getElementById('EX_MEM_B');
+
+  		var MEM_WB_LMD = document.getElementById('MEM_WB_LMD');
+  		var MEM_WB_IR = document.getElementById('MEM_WB_IR');
+  		var MEM_WB_ALU = document.getElementById('MEM_WB_ALU');
+  		var MEM_ALU = document.getElementById('MEM_ALU');
+
+  		var WB_REG = document.getElementById('WB_REG');
+
 		for(var j=0; j < cellcount - decreasecells; j++)
 		{
 			switch(instr[i].currentState)
 			{
-				case "" : instr[i].currentState = "IF"; break;
-				case "IF": instr[i].currentState = "ID"; break;
-				case "ID": instr[i].currentState = "EX"; break;
-				case "EX": instr[i].currentState = "MEM"; break;
-				case "MEM": instr[i].currentState = "WB"; break;
-				case "WB": instr[i].currentState = " "; break;
+				case "" : 
+					instr[i].currentState = "IF";
+					IF_ID_IR.value = binary_to_hex(instr[i].binary);
+					IF_ID_NPC.value = pwettify(add_zeroes_left(instr[i].PC, 15));
+					IF_PC.value = IF_ID_NPC.value;
+					
+					break;
+				case "IF": 
+					instr[i].currentState = "ID"; 
+					break;
+				case "ID": 
+					instr[i].currentState = "EX"; 
+					break;
+				case "EX": 
+					instr[i].currentState = "MEM"; 
+					break;
+				case "MEM": 
+					instr[i].currentState = "WB"; 
+					break;
+				case "WB": 
+					instr[i].currentState = " "; 
+					break;
 				default: break;
 			}
 

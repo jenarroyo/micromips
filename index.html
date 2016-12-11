@@ -1131,26 +1131,27 @@
             <div class="panel_internal_registers standard_panel">
                 <table class ="table">
                     <tr><td class="cycle_title">IF Cycle</td><td></td></tr>
-                    <tr><td class="address">IF/ID.IR</td><td class="binary"><input type="text" id ="R1" maxlength="19" value="0000 0000 0000 0000" readonly /></td></tr>
-                    <tr><td class="address">IF/ID.NPC</td><td class="binary"><input type="text" id ="R2" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">IF.PC</td><td class="binary"><input type="text" id ="R3" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">IF/ID.IR</td><td class="binary"><input type="text" id ="IF_ID_IR" maxlength="19" value="0000 0000 0000 0000" readonly /></td></tr>
+                    <tr><td class="address">IF/ID.NPC</td><td class="binary"><input type="text" id ="IF_ID_NPC" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">IF.PC</td><td class="binary"><input type="text" id ="IF_PC" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                     <tr><td class="cycle_title">ID Cycle</td><td></td></tr>  
-                    <tr><td class="address">ID/EX.IR</td><td class="binary"><input type="text" id ="R4" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">ID/EX.A</td><td class="binary"><input type="text" id ="R5" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">ID/EX.B</td><td class="binary"><input type="text" id ="R6" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">ID/EX.IMM</td><td class="binary"><input type="text" id ="R7" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">ID/EX.A</td><td class="binary"><input type="text" id ="ID_EX_A" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">ID/EX.B</td><td class="binary"><input type="text" id ="ID_EX_B" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">ID/EX.IMM</td><td class="binary"><input type="text" id ="ID_EX_IMM" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">ID/EX.IR</td><td class="binary"><input type="text" id ="ID_EX_IR" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">ID/EX.NPC</td><td class="binary"><input type="text" id ="ID_EX_NPC" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                     <tr><td class="cycle_title">EX Cycle</td><td></td></tr>
-                    <tr><td class="address">EX/MEM.IR</td><td class="binary"><input type="text" id ="R8" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">EX/MEM.ALUOUTPUT</td><td class="binary"><input type="text"   id ="R9" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">EX/MEM.B</td><td class="binary"><input type="text" id ="R10" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">EX/MEM.cond</td><td class="binary"><input type="text" id ="R11" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">EX/MEM.ALUOUTPUT</td><td class="binary"><input type="text"   id ="EX_MEM_ALU" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">EX/MEM.Cond</td><td class="binary"><input type="text" id ="EX_MEM_COND" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">EX/MEM.IR</td><td class="binary"><input type="text" id ="EX_MEM_IR" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">EX/MEM.B</td><td class="binary"><input type="text" id ="EX_MEM_B" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                     <tr><td class="cycle_title">MEM Cycle</td><td></td></tr>
-                    <tr><td class="address">MEM/WB.IR</td><td class="binary"><input type="text" id ="R12" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">MEM/WB.ALUOUTPUT</td><td class="binary"><input type="text" id ="R13" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">MEM/WB.LMD</td><td class="binary"><input type="text" id ="R14" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
-                    <tr><td class="address">MEM[ALUOUTPUT]</td><td class="binary"><input type="text" id ="R15" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">MEM/WB.LMD</td><td class="binary"><input type="text" id ="MEM_WB_LMD" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">MEM/WB.IR</td><td class="binary"><input type="text" id ="MEM_WB_IR" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">MEM/WB.ALUOUTPUT</td><td class="binary"><input type="text" id ="MEM_WB_ALU" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">MEM[ALUOUTPUT]</td><td class="binary"><input type="text" id ="MEM_ALU" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                     <tr><td class="cycle_title">WB Cycle</td><td></td></tr>        
-                    <tr><td class="address">Registers affected</td><td class="binary"><input type="text" id ="R16" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
+                    <tr><td class="address">Register affected</td><td class="binary"><input type="text" id ="WB_REG" maxlength="19" value="0000 0000 0000 0000" readonly/></td></tr>
                 </table>
             </div>
         </div>
