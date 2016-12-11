@@ -604,7 +604,7 @@ function execute_mips_code(listofInstructions){
 				newOperation.RS = currentInstr.registersUsed[0]; 
 				newOperation.RT = currentInstr.registersUsed[1];
 			    newOperation.offset = currentInstr.binary.substring(12);
-				memory = new Memory((parseInt(offset) + parseInt(R[newOperation.RS])).toString(),R[newOperation.RT]); 
+				memory = new Memory((parseInt(newOperation.offset) + parseInt(R[newOperation.RS])).toString(),R[newOperation.RT]); 
 				memoryList.push(memory);
 				executionOutput.push(newOperation);
 				currentPC += 4;
@@ -650,6 +650,8 @@ function execute_mips_code(listofInstructions){
 				i++;
 				break;
 			default:
+				i++;
+				break;
 				// do nothing if no cases matched
 		}
 	}
@@ -678,6 +680,7 @@ function display_pipeline_window()
 	var instr = listofInstructions;
 	var currentop = executionOutput;
 	
+	// TODO: Calculate width of table depending on number of instructions
 	var map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
 	
  	 //displays cycle counts
@@ -698,7 +701,7 @@ function display_pipeline_window()
 	{
 		map += "<tr>";
 		
-		map += "<td width ='150px'>" + cycleList[i].IF_instr + "</td>";
+		map += "<td width ='450px'>" + cycleList[i].IF_instr + "</td>";
 		
 		
 		console.log("cellcount : " + cellcount);
