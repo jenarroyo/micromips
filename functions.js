@@ -113,7 +113,7 @@ function binary_to_hex(string)
 
 function regex_check_syntax(string)
 {
-	var re = /^((L[0-9](:)(\s))?(OR|DSUBU|SLT|BNE|LD|SD|DADDIU|J)\s((L[0-9]{1,2})|(R[0-9]{1,2}))(,\s((L[0-9]{1,2})|([0-9]{4}\((R[0-9]{1,2})\))|((R[0-9]{1,2})(,\s(R[0-9]{1,2}|\#[0-9A-F]{4}))?))))|(NOP)?$/m;
+	var re = /^((L[0-9](:)(\s))?(OR|DSUBU|SLT|BNE|LD|SD|DADDIU)\s((L[0-9]{1,2})|(R[0-9]{1,2}))(,\s((L[0-9]{1,2})|([0-9]{4}\((R[0-9]{1,2})\))|((R[0-9]{1,2})(,\s(R[0-9]{1,2}|\#[0-9A-F]{4}))?))))|(NOP)|(J)\s(L[0-9]{1,2})?$/m;
 	var check = re.exec(string);
 
 	return check;
@@ -271,7 +271,7 @@ function parse_code()
 			
 			if(string.length !== 0)
 			{	
-				if(tokens[0] !== "NOP")
+				if(tokens[5] !== undefined)
 				{
 					switch(tokens[5])
 					{
@@ -283,9 +283,11 @@ function parse_code()
 						case "LD" : currentoperation = new InstructData(tokens[5], "I-TYPE","LOADSTORE"); break;
 						case "SD" : currentoperation = new InstructData(tokens[5], "I-TYPE","LOADSTORE"); break;
 						case "DADDIU" : currentoperation = new InstructData(tokens[5], "I-TYPE","ALU"); break;
-
-						case "J" : currentoperation = new InstructData(tokens[5],"J-TYPE","NEITHER"); break;
 					}
+				}
+				else if(tokens[19] === "J")
+				{
+					currentoperation = new InstructData(tokens[19],"J-TYPE","NEITHER");
 				}
 				else
 				{
@@ -301,8 +303,8 @@ function parse_code()
 			{
 				current += "000010";
 				
-				currentoperation.label = tokens[6];
-				reference = tokens[6].replace("L","");
+				currentoperation.label = tokens[20];
+				reference = tokens[20].replace("L","");
 				reference = parseInt(reference.replace(":",""));
 				
 				reference = reference - (currentPC + 4);
