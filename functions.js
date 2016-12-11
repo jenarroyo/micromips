@@ -833,4 +833,15 @@ function display_registers_window()
 	map += "</tr>";
 	registerswindow.document.write(map);
 }
+
+function clear_log()
+{
+	var logsDiv = document.getElementById('mips-log-area');
+	logsDiv.value = "";
+}
+
+function clear_opcode_window(){
+	var opcodeDiv = document.getElementById('mips-opcodes-area');
+	opcodeDiv.value = "";
+}
 /** End of Display Functions */
