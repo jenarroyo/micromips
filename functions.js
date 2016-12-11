@@ -113,7 +113,7 @@ function binary_to_hex(string)
 
 function regex_check_syntax(string)
 {
-	var re = /^(L[0-9](:)(\s))?(OR|DSUBU|SLT|NOP|BNE|LD|SD|DADDIU|J)\s((L[0-9]{1,2})|(R[0-9]{1,2}))(,\s((L[0-9]{1,2})|([0-9]{4}\((R[0-9]{1,2})\))|((R[0-9]{1,2})(,\s(R[0-9]{1,2}|\#[0-9A-F]{4}))?)))?$/m;
+	var re = /^((L[0-9](:)(\s))?(OR|DSUBU|SLT|BNE|LD|SD|DADDIU|J)\s((L[0-9]{1,2})|(R[0-9]{1,2}))(,\s((L[0-9]{1,2})|([0-9]{4}\((R[0-9]{1,2})\))|((R[0-9]{1,2})(,\s(R[0-9]{1,2}|\#[0-9A-F]{4}))?))))|(NOP)?$/m;
 	var check = re.exec(string);
 
 	return check;
@@ -271,20 +271,27 @@ function parse_code()
 			
 			if(string.length !== 0)
 			{	
-				switch(tokens[4])
+				if(tokens[0] !== "NOP")
 				{
-					case "OR" : currentoperation = new InstructData(tokens[4], "R-TYPE","ALU"); break;
-					case "DSUBU" : currentoperation = new InstructData(tokens[4], "R-TYPE", "ALU"); break;
-					case "SLT" : currentoperation = new InstructData(tokens[4], "R-TYPE","ALU"); break;
-					case "NOP" : currentoperation = new InstructData(tokens[4], "R-TYPE",""); break;
+					switch(tokens[5])
+					{
+						case "OR" : currentoperation = new InstructData(tokens[5], "R-TYPE","ALU"); break;
+						case "DSUBU" : currentoperation = new InstructData(tokens[5], "R-TYPE", "ALU"); break;
+						case "SLT" : currentoperation = new InstructData(tokens[5], "R-TYPE","ALU"); break;
 
-					case "BNE" : currentoperation = new InstructData(tokens[4], "I-TYPE","BRANCH"); break;
-					case "LD" : currentoperation = new InstructData(tokens[4], "I-TYPE","LOADSTORE"); break;
-					case "SD" : currentoperation = new InstructData(tokens[4], "I-TYPE","LOADSTORE"); break;
-					case "DADDIU" : currentoperation = new InstructData(tokens[4], "I-TYPE","ALU"); break;
+						case "BNE" : currentoperation = new InstructData(tokens[5], "I-TYPE","BRANCH"); break;
+						case "LD" : currentoperation = new InstructData(tokens[5], "I-TYPE","LOADSTORE"); break;
+						case "SD" : currentoperation = new InstructData(tokens[5], "I-TYPE","LOADSTORE"); break;
+						case "DADDIU" : currentoperation = new InstructData(tokens[5], "I-TYPE","ALU"); break;
 
-					case "J" : currentoperation = new InstructData(tokens[4],"J-TYPE","NEITHER"); break;
+						case "J" : currentoperation = new InstructData(tokens[5],"J-TYPE","NEITHER"); break;
+					}
 				}
+				else
+				{
+					currentoperation = new InstructData(tokens[0], "R-TYPE","");
+				}
+
 			}
 			
 			currentoperation.registersUsed = new Array(); // reset/init registersUsed
@@ -294,8 +301,8 @@ function parse_code()
 			{
 				current += "000010";
 				
-				currentoperation.label = tokens[5];
-				reference = tokens[5].replace("L","");
+				currentoperation.label = tokens[6];
+				reference = tokens[6].replace("L","");
 				reference = parseInt(reference.replace(":",""));
 				
 				reference = reference - (currentPC + 4);
@@ -315,42 +322,65 @@ function parse_code()
 			
 			else if(currentoperation.type === "R-TYPE")
 			{
-				current += "000000";
-				
-				//RS
-				currentoperation.registersUsed.push(get_reg_num(tokens[14]));
-				current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[14])),5)
-				
-				//RT
-				currentoperation.registersUsed.push(get_reg_num(tokens[16]));
-				current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[16])),5)
-
-				//RD
-				currentoperation.registersUsed.push(get_reg_num(tokens[5]));
-				current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[5])),5)
-				currentoperation.registerDestination = get_reg_num(tokens[5]);
-
-				current += "00000";
-				
-				var funcCode = 0;
-				switch(currentoperation.operation)
+				if(currentoperation.operation === "NOP")
 				{
-					case "OR": current += add_zeroes_left(decimal_to_binary("37"),6); break;
-					case "SLT": current += add_zeroes_left(decimal_to_binary("42"),6); break;
-					case "DSUBU": current += add_zeroes_left(decimal_to_binary("47"),6); break;
-					case "NOP": current+= add_zeroes_left(decimal_to_binary("0"), 6); break;
-					default: current+= add_zeroes_left(decimal_to_binary("0"), 6); break;
+					current += add_zeroes_left("", 32);
+
+					// store binary opcode				
+					currentoperation.binary = current;
+					// store current PC
+					currentoperation.PC = currentPC;
+					// initialize current state
+					currentoperation.currentState = "";
+					// add to list of instructions to execute
+					listofInstructions.push(currentoperation);
 				}
-				
-				currentoperation.binary = current;
-				currentoperation.PC = currentPC;
-				currentoperation.currentState = "";
-				listofInstructions.push(currentoperation);
-				
+				else
+				{
+					// first part of entire opcode
+					current += "000000";
+					
+					// add register number to opcode and save to list of registers used
+					//RS
+					currentoperation.registersUsed.push(get_reg_num(tokens[15]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[15])),5);
+					
+					//RT
+					currentoperation.registersUsed.push(get_reg_num(tokens[17]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[17])),5);
+
+					//RD
+					currentoperation.registersUsed.push(get_reg_num(tokens[6]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[6])),5);
+					currentoperation.registerDestination = get_reg_num(tokens[6]);
+
+					// add additional part of entire opcode
+					current += "00000";
+					
+					// add last part of R-type opcodes			
+					var funcCode = 0;
+					switch(currentoperation.operation)
+					{
+						case "OR": current += add_zeroes_left(decimal_to_binary("37"),6); break;
+						case "SLT": current += add_zeroes_left(decimal_to_binary("42"),6); break;
+						case "DSUBU": current += add_zeroes_left(decimal_to_binary("47"),6); break;
+						default: current+= add_zeroes_left(decimal_to_binary("0"), 6); break;
+					}
+					
+					// store binary opcode				
+					currentoperation.binary = current;
+					// store current PC
+					currentoperation.PC = currentPC;
+					// initialize current state
+					currentoperation.currentState = "";
+					// add to list of instructions to execute
+					listofInstructions.push(currentoperation);
+				}
 			}
 			
 			else if(currentoperation.type === "I-TYPE")
 			{
+				// add first part of binary opcode
 				switch(currentoperation.operation)
 				{
 					case "BNE": current += add_zeroes_left(decimal_to_binary("5"),6); break;
@@ -360,17 +390,18 @@ function parse_code()
 					default: ;
 				}	
 				
+				// add unique part in between the binary opcode
 				if(currentoperation.operation === "BNE")
 				{
-					currentoperation.registersUsed.push(get_reg_num(tokens[14]));
-					current += add_zeroes_left(decimal_to_binary(get_reg_num(token[14])),5) //RS
-					currentoperation.registerDestination = get_reg_num(tokens[14]);
+					currentoperation.registersUsed.push(get_reg_num(tokens[15]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[15])),5) //RS
+					currentoperation.registerDestination = get_reg_num(tokens[15]);
 					
 					current += "00000";
 					
 					// label
-					currentoperation.label = tokens[9];
-					var reference = parseInt(tokens[9].replace("L",""));
+					currentoperation.label = tokens[10];
+					var reference = parseInt(tokens[10].replace("L",""));
 					
 					reference = reference - (currentPC + 4);
 					
@@ -382,6 +413,7 @@ function parse_code()
 						current += add_zeroes_left(decimal_to_binary(reference),16);
 					}
 					
+					// save values
 					currentoperation.binary = current;
 					currentoperation.PC = currentPC;
 					currentoperation.currentState = "";
@@ -392,15 +424,15 @@ function parse_code()
 				else if(currentoperation.operation === "DADDIU")
 				{
 					
-					currentoperation.registersUsed.push(get_reg_num(tokens[14]));
-					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[14])),5)
+					currentoperation.registersUsed.push(get_reg_num(tokens[15]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[15])),5);
 					
-					currentoperation.registersUsed.push(get_reg_num(tokens[5]));
-					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[5])),5)
-					currentoperation.registerDestination = get_reg_num(tokens[5]);
+					currentoperation.registersUsed.push(get_reg_num(tokens[6]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[6])),5);
+					currentoperation.registerDestination = get_reg_num(tokens[6]);
 				
 					//offset
-					var offsetInt = tokens[16].replace("#","");
+					var offsetInt = tokens[17].replace("#","");
 					
 					offsetInt = offsetInt.split("");	
 					
@@ -425,7 +457,7 @@ function parse_code()
 				
 				else if(currentoperation.operation === "LD" || currentoperation.operation === "SD")
 				{					
-					var offsetPair = tokens[9].split("\(");
+					var offsetPair = tokens[10].split("\(");
 					
 					// base
 					//var register = ;
@@ -436,9 +468,9 @@ function parse_code()
 					// dest
 					
 					//register = ;
-					currentoperation.registersUsed.push(get_reg_num(tokens[5]));
-					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[5])),5);
-					currentoperation.registerDestination = get_reg_num(tokens[5]);
+					currentoperation.registersUsed.push(get_reg_num(tokens[6]));
+					current += add_zeroes_left(decimal_to_binary(get_reg_num(tokens[6])),5);
+					currentoperation.registerDestination = get_reg_num(tokens[6]);
 					
 					//offset
 					
@@ -492,7 +524,6 @@ function execute_mips_code(listofInstructions){
 	
 	while(currentPC == 0 || currentPC <= listofInstructions[listofInstructions.length - 1].PC)
 	{
-		//alert("currentPC : " + currentPC + " listofInstructions[listofInstructions.length - 1].PC : " + listofInstructions[listofInstructions.length - 1].PC);
 		var currentInstr = listofInstructions[i];
 		var newOperation = new ExecutionOutput();
 		var memory;
@@ -614,9 +645,7 @@ function execute_mips_code(listofInstructions){
 				break;
 			case "NOP" :
 				newOperation.op = "NOP";
-				newOperation.RS = currentInstr.registersUsed[0];
-				newOperation.RT = currentInstr.registersUsed[1];
-				newOperation.preOp = currentInstr.registersUsed[2];
+				executionOutput.push(newOperation)
 				currentPC += 4;
 				i++;
 				break;
