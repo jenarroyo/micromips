@@ -224,8 +224,8 @@ function InstructData(operation, type, MIPSOperation)
 }
 /** End of Data Containers */
 
-// function to analyze code
-function parse_code()
+// function to load code
+function load()
 {
 	var logsDiv = document.getElementById('mips-log-area'); // grab div containing logs
 	save_register_values(); // save register values entered by user
@@ -690,14 +690,15 @@ function execute_mips_code(listofInstructions){
 
 /** Display Functions */
 // former opcode window display
-function display_opcode_window()
+function opcode()
 {
-	var div = document.getElementById('mips-opcodes-area');
-	// div.value = "";
-	
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		div.value = div.value + listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
+		$('#mips-opcodes-area').append('<tr><td style="width:20px;"> ' + listofInstructions[i].PC 
+			+ '</td><td  style="width:50px;"> ' + listofInstructions[i].operation 
+			+  '</td><td  style="width:80px;"> ' + binary_to_hex(listofInstructions[i].binary) 
+			// +  '</td><td  style="width:100px;"> ' + listofInstructions[i].binary
+			+ '</td></tr>');
 	}
 }
 
@@ -707,7 +708,7 @@ function display_pipeline_window()
 	// var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
 
  	// pipelineWindow.document.clear();
- 	var div = document.getElementById('panel_pipeline');
+ 	var div = document.getElementById('pipeline-map');
 	var instr = listofInstructions;
 	var currentop = executionOutput;
 	
@@ -734,7 +735,6 @@ function display_pipeline_window()
 		map += "<tr>";
 		
 		map += "<td width ='450px'>" + cycleList[i].IF_instr + "</td>";
-		
 		
 		console.log("cellcount : " + cellcount);
 		console.log("cells decreased: " + decreasecells);
@@ -915,3 +915,8 @@ function clear_opcode_window(){
 	opcodeDiv.value = "";
 }
 /** End of Display Functions */
+
+function goto_data(){
+    input_search = document.getElementById("input-search").value;
+    document.getElementById(input_search).focus();
+}
