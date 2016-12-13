@@ -1,43 +1,52 @@
 /** MIPS Cycles */
-function do_IF()
+function do_IF(currentPC)
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var instr;
-	
-	for(var i = 0; i < listofInstructions.length; i++)
-	{
-		if(listofInstructions[i].PC = currentPC)
-		{
-			instr = listofInstructions[i];
-			break;
-		}
-	}
-	
-	currentCycle.IF_instr = instr;
-	
-	// IF/ID.IR <- Mem[PC]
-	currentCycle.IF_IR =  binary_to_hex(instr.binary);
-	
-	// IF/ID.NPC, PC <- (if EX/MEM cond {EX/MEM.ALUOutput} else {PC+4}
-	if(currentCycle.EX_cond == "0")
-	{
-		currentCycle.IF_NPC = add_zeroes_left(binary_to_hex(decimal_to_binary(toString(currentPC))),16);
-	} 
-	else
-	{
-		currentCycle.IF_NPC = previousCycle.EX_ALU;
-	}
+    var previousCycle = cycleList[cycleList.length - 1];
+    var instr;
+    
+    for(var i = 0; i < listofInstructions.length; i++)
+    {
+        if(listofInstructions[i].PC == currentPC)
+        {
+            instr = listofInstructions[i];
+            break;
+        }
+    }
+    
+    if(listofInstructions[i-1] != undefined){
+        var tempRegs = listofInstructions[i-1].registersUsed;
+        var currentRegs = listofInstructions[i].registersUsed;
+
+        if(tempRegs.indexOf(currentRegs[0]) != -1 || tempRegs.indexOf(currentRegs[1]) != -1){
+            stallDataHazard = true;
+        }
+    }
+
+    currentCycle.IF_instr = instr;
+    
+    // IF/ID.IR <- Mem[PC]
+    currentCycle.IF_IR =  binary_to_hex(instr.binary);
+    
+    // IF/ID.NPC, PC <- (if EX/MEM cond {EX/MEM.ALUOutput} else {PC+4}
+    // if(currentCycle.EX_cond == "0")
+    // {
+        currentCycle.IF_NPC = add_zeroes_left(binary_to_hex(decimal_to_binary((currentPC+4).toString(16))),16);
+    // } 
+    // else
+    // {
+    //  currentCycle.IF_NPC = previousCycle.EX_ALU;
+    // }
 }
 
 function do_ID()
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var instr = previousCrcle.IF_instr;
-	
-	var previousIR = previousCycle.IF_IR;
-	var binaryofIR = currentCycle.IF_instr.binary;
-	
-	// ID/EX.A <- REG[6..10]; 
+    var previousCycle = cycleList[cycleList.length - 1];
+    var instr = previousCycle.IF_instr;
+    
+    var previousIR = previousCycle.IF_IR;
+    var binaryOfIR = currentCycle.IF_instr.binary;
+    
+    // ID/EX.A <- REG[6..10]; 
     currentCycle.ID_A += parseInt(binaryOfIR.substring(6, 10),2);
         
     // ID/EX.B <- REG[11..15];
@@ -56,13 +65,13 @@ function do_ID()
 
 function do_EX()
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var EX_instr = previousCrcle.ID_instr;
-	
-	currentCycle.EX_instr = EX_instr;
-	
-	if(EX_instr.MIPSOperation == "ALU")
-	{
+    var previousCycle = cycleList[cycleList.length - 1];
+    var EX_instr = previousCycle.ID_instr;
+    
+    currentCycle.EX_instr = EX_instr;
+    
+    if(EX_instr.MIPSOperation == "ALU")
+    {
         
         /*** ALU ***/
         var ALUoutput = "";
@@ -82,7 +91,7 @@ function do_EX()
         var valueOfB = parseInt(previousCycle.ID_B);
         var valueOfImm = parseInt(previousCycle.ID_IMM);
             
-		if(EX_instr.operation == "OR")
+        if(EX_instr.operation == "OR")
         {
             currentCycle.EX_ALU = perform_OR(valueOfA,valueOfImm);
         } 
@@ -104,7 +113,7 @@ function do_EX()
             } 
             else 
             {
-            	currentCycle.EX_cond = "0";
+                currentCycle.EX_cond = "0";
             }
         }
         else if(EX_instr.operation == "NOP"){}
@@ -155,40 +164,40 @@ function do_EX()
 
 function do_MEM()
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var MEM_instr = previousCrcle.EX_instr;
-	currentCycle.MEM_instr = MEM_instr;
-	
-	if(MEM_instr.MIPSOperation == "ALU")
-	{
-		currentCycle.MEM_IR = previousCycle.EX_IR;
-		currentCycle.MEM_ALU = previousCycle.EX_ALU;
-	}
-	
-	else if(MEM_instr.MIPSOperation == "LOADSTORE")
-	{
-		currentCycle.MEM_IR = previousCycle.EX_IR;
-		
-		if(MEM_instr.operation == "LD")
-		{
-			currentCycle.MEM_LMD = previousCycle.EX_IR;
-		}
-		
-		else 
-		{
-			currentCycle.EX_ALU = previousCycle.EX_B;
-		}
-	
-	} 
-	else 
-	{
+    var previousCycle = cycleList[cycleList.length - 1];
+    var MEM_instr = previousCycle.EX_instr;
+    currentCycle.MEM_instr = MEM_instr;
+    
+    if(MEM_instr.MIPSOperation == "ALU")
+    {
+        currentCycle.MEM_IR = previousCycle.EX_IR;
+        currentCycle.MEM_ALU = previousCycle.EX_ALU;
+    }
+    
+    else if(MEM_instr.MIPSOperation == "LOADSTORE")
+    {
+        currentCycle.MEM_IR = previousCycle.EX_IR;
+        
+        if(MEM_instr.operation == "LD")
+        {
+            currentCycle.MEM_LMD = previousCycle.EX_IR;
+        }
+        
+        else 
+        {
+            currentCycle.EX_ALU = previousCycle.EX_B;
+        }
+    
+    } 
+    else 
+    {
 
-	}
+    }
 }
 
 function do_WB()
 {
-    var previousCycle = cycleList[cycleList.length() - 1];
+    var previousCycle = cycleList[cycleList.length - 1];
     var WB_instr = previousCycle.MEM_instr;
     currentCycle.WB_instr = WB_instr;
     
