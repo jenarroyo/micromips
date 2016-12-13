@@ -788,30 +788,30 @@ function display_pipeline_window()
 			{
 				case "" : 
 					instructionList[i].currentState = "IF";
-					// do_IF(currentPC);
+					do_IF(currentPC);
 
 					break;
 				case "IF": 
 					instructionList[i].currentState = "ID";
 
-					// do_ID();
+					do_ID();
 
 					break;
 				case "ID": 
 					instructionList[i].currentState = "EX"; 
 
-					// do_EX();
+					do_EX();
 
 					break;
 				case "EX": 
 					instructionList[i].currentState = "MEM"; 
 
-					// do_MEM();
+					do_MEM();
 
 					break;
 				case "MEM": 
 					instructionList[i].currentState = "WB"; 
-					// do_WB();
+					do_WB();
 
 					break;
 				case "WB": 
