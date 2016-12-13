@@ -708,11 +708,14 @@ function display_pipeline_window()
 
  	// pipelineWindow.document.clear();
  	var div = document.getElementById('panel_pipeline');
-	var instr = listofInstructions;
-	var currentop = executionOutput;
+	var instructionList = listofInstructions;
+	var currentExecutionOutput = executionOutput;
+	var currentPC = 0;
 	
 	// TODO: Calculate width of table depending on number of instructions
-	var map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
+	var map = "";
+
+	map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
 	
  	 //displays cycle counts
 	map += "<tr>";
@@ -736,16 +739,16 @@ function display_pipeline_window()
 		map += "<td width ='450px'>" + cycleList[i].IF_instr + "</td>";
 		
 		
-		console.log("cellcount : " + cellcount);
-		console.log("cells decreased: " + decreasecells);
+		console.log("Cell Count : " + cellcount);
+		console.log("Cells Decreased: " + decreasecells);
 		
-		if(i > 0 && instr[i].currentState== "")
+		if(i > 0 && instructionList[i].currentState== "")
 		{
       		for(var a=0; a<i; a++)
       		{
         		if(a<=i)
         		{
-          			map += "<td width = '30px'>" + "&nbsp" + "</td>";
+          			map += "<td width = '30px'>" + "&nbsp; " + "</td>";
 				}
      		}
   		}
@@ -756,7 +759,7 @@ function display_pipeline_window()
 
   		var ID_EX_A = document.getElementById('ID_EX_A');
   		var ID_EX_B = document.getElementById('ID_EX_B');
-  		var ID_EX_IMM = document.getElementById('ID_EX_IMM =');
+  		var ID_EX_IMM = document.getElementById('ID_EX_IMM');
   		var ID_EX_IR = document.getElementById('ID_EX_IR');
   		var ID_EX_NPC = document.getElementById('ID_EX_NPC');
 
@@ -772,42 +775,62 @@ function display_pipeline_window()
 
   		var WB_REG = document.getElementById('WB_REG');
 
+  		var stallDataHazard = false;
+  		var isStep = true;
+  		var clockCycle = 0;
+
+  		if(isStep){
+  			clockCycle += 1;
+  		}
+
 		for(var j=0; j < cellcount - decreasecells; j++)
 		{
-			switch(instr[i].currentState)
+			switch(instructionList[i].currentState)
 			{
 				case "" : 
-					instr[i].currentState = "IF";
-					IF_ID_IR.value = binary_to_hex(instr[i].binary);
-					IF_ID_NPC.value = pwettify(add_zeroes_left(instr[i].PC, 15));
-					IF_PC.value = IF_ID_NPC.value;
-					
+					instructionList[i].currentState = "IF";
+					// do_IF(currentPC);
+
 					break;
 				case "IF": 
-					instr[i].currentState = "ID"; 
+					instructionList[i].currentState = "ID";
+
+					// do_ID();
+
 					break;
 				case "ID": 
-					instr[i].currentState = "EX"; 
+					instructionList[i].currentState = "EX"; 
+
+					// do_EX();
+
 					break;
 				case "EX": 
-					instr[i].currentState = "MEM"; 
+					instructionList[i].currentState = "MEM"; 
+
+					// do_MEM();
+
 					break;
 				case "MEM": 
-					instr[i].currentState = "WB"; 
+					instructionList[i].currentState = "WB"; 
+					// do_WB();
+
 					break;
 				case "WB": 
-					instr[i].currentState = " "; 
+					instructionList[i].currentState = " "; 
+
 					break;
 				default: break;
 			}
 
-			map += "<td width = '30px'>" + instr[i].currentState + "</td>";
+			map += "<td width = '30px'>" + instructionList[i].currentState + "</td>";
+
+
 		}
 		
-		if(currentop[i] !== undefined && currentop[i].op !== undefined){
-			if(currentop[i].op == "BNE" || currentop[i].op == "J")
+		if(currentExecutionOutput[i] !== undefined && currentExecutionOutput[i].op !== undefined){
+			if(currentExecutionOutput[i].op == "BNE" || currentExecutionOutput[i].op == "J")
 			{
-				i = currentop.PC/4;
+				i = currentExecutionOutput.PC/4;
 			}
 			else
 			{
@@ -898,7 +921,7 @@ function display_registers_window()
 	{
 	map += "<tr>";
 	map += "<td width='150px'>" + cycleList[i].IF_instr + "</td>";  //prints the current instruction
-	map += "<td width = '3opx'>" + "PC = " + cycleList[i].PC + "&#10;" + "NPC = " + cycleList[i].NPC  + "</td>";
+	map += "<td width = '30px'>" + "PC = " + cycleList[i].PC + "&#10;" + "NPC = " + cycleList[i].NPC  + "</td>";
 	}
 	map += "</tr>";
 	registerswindow.document.write(map);
