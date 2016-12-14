@@ -1,4 +1,8 @@
 /* ELEMENT STYLES */
+html, body {
+    height: 100%;
+}
+
 html {
 	font-size: 12px;
 	/* background: url(background.jpg) no-repeat center center fixed; */
@@ -17,10 +21,9 @@ body {
 	/* background: none; */
 }
 textarea {
+	height: 100%;	
 	float: left;
 	width: 100%;
-	height: 100%;
-	resize: none;
 	font-size: 12px;
 }
 h4{
@@ -30,28 +33,27 @@ h4{
 h1{
 	font-family: "Helvetica Neue", monospace;;
 }
-
-/* CLASSES */
-
-.registers {
-/* 	height: 320px;
-overflow-y: scroll; */
-}
-.code_segment {
-/* 	height: 320px;
-overflow-y: scroll; */
-}
-.data_segment {
-/* 	height: 320px;
-overflow-y: scroll; */
+span{
+text-align: left;
 }
 
-.button_group{}
-
-.save_button {
-	/*width: 50%;*/
-	box-shadow: none;
+.nopadding {
+   /*padding: 0 !important;*/
+   /*margin: 0 !important;*/
+   padding-right: 0 !important;
+   /*padding-left: 0 !important;*/
 }
+
+.table-borderless tbody tr td,
+.table-borderless tbody tr th,
+.table-borderless thead tr th,
+.table-borderless thead tr td,
+.table-borderless tfoot tr th,
+.table-borderless tfoot tr td {
+    border: none;
+}
+
+
 .header {
 	font-family: "Courier", monospace;
 	font-size: 40px;
@@ -59,43 +61,48 @@ overflow-y: scroll; */
 	text-align: center;
 	height: 60px;
 }
-.table {
-	float: left;
-	border-collapse: collapse;
-	border-spacing: 5px;
+
+/* MIPS RELATED CLASSES */
+.segment {
+	height: 350px;
+	overflow-y: scroll;
+	/*border: 1px solid #333;*/
+	padding-right: none !important;
+	/*background-color: #ebebeb;*/
 }
-.address {
+
+#codearea{
+	min-height: 350px;
+	resize: none;
+}
+#logarea{
+	min-height:350px;
+}
+.controls{
+	text-align: center;
+	padding-bottom: 10px;
+}
+
+/*.address {
 	font-family: "Courier", monospace;
 	font-weight: bold;
 	text-align: left;
 	padding: 2px !important;
-}
+}*/
 .binary {
-	text-align: center;
+	text-align: right;
 	padding: 2px !important;
 }
 .bottom-buffer {
 	margin-bottom: 10px;
 }
-.col-md-3, .col-md-6 {
-	border: 1px solid #333;
-}
-.standard_panel {
-	height: 280px;
-	overflow-y: scroll;
-}
 
-/* ID */
+
 #mips-log-area{
 	background-color: #333;
-	/*color: #FFCCCC;*/
 	color: #dff0d8;
 	height: 280px;
 }
 #mips-opcodes-area{
 	background-color: #ddd;
-}
-.controls{
-	text-align: center;
-	padding-bottom: 10px;
 }

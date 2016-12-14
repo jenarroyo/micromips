@@ -224,8 +224,8 @@ function InstructData(operation, type, MIPSOperation)
 }
 /** End of Data Containers */
 
-// function to analyze code
-function parse_code()
+// function to load code
+function load()
 {
 	var logsDiv = document.getElementById('mips-log-area'); // grab div containing logs
 	save_register_values(); // save register values entered by user
@@ -690,14 +690,15 @@ function execute_mips_code(listofInstructions){
 
 /** Display Functions */
 // former opcode window display
-function display_opcode_window()
+function opcode()
 {
-	var div = document.getElementById('mips-opcodes-area');
-	// div.value = "";
-	
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		div.value = div.value + listofInstructions[i].PC + " " + listofInstructions[i].operation + " : " +  binary_to_hex(listofInstructions[i].binary) + " " + listofInstructions[i].binary + "\n";
+		$('#mips-opcodes-area').append('<tr><td style="width:20px;"> ' + listofInstructions[i].PC 
+			+ '</td><td  style="width:50px;"> ' + listofInstructions[i].operation 
+			+  '</td><td  style="width:80px;"> ' + binary_to_hex(listofInstructions[i].binary) 
+			// +  '</td><td  style="width:100px;"> ' + listofInstructions[i].binary
+			+ '</td></tr>');
 	}
 }
 
@@ -707,10 +708,21 @@ function display_pipeline_window()
 	// var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
 
  	// pipelineWindow.document.clear();
+<<<<<<< HEAD
  	var div = document.getElementById('panel_pipeline');
 	var instructionList = listofInstructions;
 	var currentExecutionOutput = executionOutput;
 	var currentPC = 0;
+||||||| merged common ancestors
+ 	var div = document.getElementById('panel_pipeline');
+	var instr = listofInstructions;
+	var currentop = executionOutput;
+=======
+ 	var div = document.getElementById('pipeline-map');
+	var instructionList = listofInstructions;
+	var currentExecutionOutput = executionOutput;
+	var currentPC = 0;
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 	
 	// TODO: Calculate width of table depending on number of instructions
 	var map = "";
@@ -788,32 +800,79 @@ function display_pipeline_window()
 			switch(instructionList[i].currentState)
 			{
 				case "" : 
+<<<<<<< HEAD
 					instructionList[i].currentState = "IF";
 					// do_IF(currentPC);
 
+||||||| merged common ancestors
+					instr[i].currentState = "IF";
+					IF_ID_IR.value = binary_to_hex(instr[i].binary);
+					IF_ID_NPC.value = pwettify(add_zeroes_left(instr[i].PC, 15));
+					IF_PC.value = IF_ID_NPC.value;
+					
+=======
+					instructionList[i].currentState = "IF";
+					do_IF(currentPC);
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "IF": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "ID";
 
 					// do_ID();
 
+||||||| merged common ancestors
+					instr[i].currentState = "ID"; 
+=======
+					instructionList[i].currentState = "ID";
+
+					do_ID();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "ID": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "EX"; 
 
 					// do_EX();
 
+||||||| merged common ancestors
+					instr[i].currentState = "EX"; 
+=======
+					instructionList[i].currentState = "EX"; 
+
+					do_EX();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "EX": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "MEM"; 
 
 					// do_MEM();
 
+||||||| merged common ancestors
+					instr[i].currentState = "MEM"; 
+=======
+					instructionList[i].currentState = "MEM"; 
+
+					do_MEM();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "MEM": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "WB"; 
 					// do_WB();
 
+||||||| merged common ancestors
+					instr[i].currentState = "WB"; 
+=======
+					instructionList[i].currentState = "WB"; 
+					do_WB();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "WB": 
 					instructionList[i].currentState = " "; 
@@ -938,3 +997,8 @@ function clear_opcode_window(){
 	opcodeDiv.value = "";
 }
 /** End of Display Functions */
+
+function goto_data(){
+    input_search = document.getElementById("input-search").value;
+    document.getElementById(input_search).focus();
+}

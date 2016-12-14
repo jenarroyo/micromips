@@ -1,0 +1,74 @@
+Instructions Lists
+
+1. R-type instructions: OR, DSUBU, SLT, NOP
+2. I-type instructions: BNE, LD, SD, DADDIU
+3. J-type instruction: J
+
+============
+Format
+============
+OR rd, rs, rt
+000000 + rs + rt +  00000 + 100101
+
+DSUBU rd, rs, rt
+000000 + rs + rt + rd + 00000 + 101111
+
+SLT rd, rs, rt
+000000 + rs + rt + rd + 00000 + 101010
+
+NOP (SLL r0, r0, 0)
+000000 + 00000 + 00000 + 00000 + 00000 + 000000 
+
+
+BNE rs, rt, offset
+000101 + rs + rt + offset
+
+LD rt, offset(base)
+110111 + base + rt + offset
+
+SD rt, offset(base)
+111111 + base + rt + offset
+
+DADDIU rt, rs, immediate
+011001 + rs + rt + immediate
+
+J instr_index
+000010 + instr_index (26)
+J LABEL1
+
+===================================================
+Test Cases
+
+OR R1, R2, R3
+DSUBU R1, R2, R3
+SLT R1, R2, R3
+NOP
+
+BNE R1, R2, L1
+LD R1, 3000(R2)
+SD R1, 3000(R2)
+DADDIU R1, R2, 2000
+
+J L1
+
+============================
+OR R1, R2, R3
+DSUBU R2, R3, R4
+DSUBU R4, R1, R3
+SLT R4, R1, R2
+
+J L1
+OR R0, R1, R2
+OR R0, R1, R2
+OR R0, R1, R2
+
+L1: OR R0, R0, R0
+
+DADDIU R5, R1, 1000
+
+LD R1, 1000(R2)
+SD R2, 1000(R3)
+
+R1, R2, R3, R4, R5, R6, R7, R8, R9, R10
+R11, R12, R13, R14, R15, R16, R17, R18, R19, R20
+================================
