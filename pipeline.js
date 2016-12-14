@@ -21,16 +21,17 @@ function do_IF(currentPC)
             stallDataHazard = true;
         }
     }
-
-    currentCycle.IF_instr = instr;
     
     // IF/ID.IR <- Mem[PC]
     currentCycle.IF_IR =  binary_to_hex(instr.binary);
-    
+    IF_ID_IR.value = currentCycle.IF_IR;
+
     // IF/ID.NPC, PC <- (if EX/MEM cond {EX/MEM.ALUOutput} else {PC+4}
     // if(currentCycle.EX_cond == "0")
     // {
         currentCycle.IF_NPC = add_zeroes_left(binary_to_hex(decimal_to_binary((currentPC+4).toString(16))),16);
+        IF_ID_NPC.value = currentCycle.IF_NPC;
+        IF_PC.value = IF_ID_NPC.value;
     // } 
     // else
     // {
@@ -48,19 +49,24 @@ function do_ID()
     
     // ID/EX.A <- REG[6..10]; 
     currentCycle.ID_A += parseInt(binaryOfIR.substring(6, 10),2);
+    ID_EX_A.value = currentCycle.ID_A; 
         
     // ID/EX.B <- REG[11..15];
     currentCycle.ID_B += parseInt(binaryOfIR.substring(11, 15),2);
-        
+    ID_EX_B.value = currentCycle.ID_B;  
+
     // ID/EX.Imm <- (SIGN EXTENSION)##IF/ID.IR[16-31]
     // shortcut [SIGN EXTEND]##IR[4,7]
     currentCycle.ID_IMM += parseInt(binaryOfIR.substring(16, 31),2);
-     
+    ID_EX_IMM.value = currentCycle.ID_IMM;
+
     // ID/EX.NPC <- IF/ID.NPC
     currentCycle.ID_NPC = previousCycle.IF_NPC;
+    ID_EX_NPC.value = currentCycle.ID_NPC;
         
     // ID/EX.IR <- IF/ID.IR
     currentCycle.ID_IR = previousCycle.IF_IR;
+    ID_EX_IR.value = currentCycle.ID_IR;
 }
 
 function do_EX()
@@ -94,6 +100,7 @@ function do_EX()
         if(EX_instr.operation == "OR")
         {
             currentCycle.EX_ALU = perform_OR(valueOfA,valueOfImm);
+            
         } 
         else if(EX_instr.operation == "DADDIU")
         {

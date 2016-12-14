@@ -71,35 +71,6 @@ function decimal_to_binary(string)
 	return parseInt(string,10).toString(2);
 }
 
-function pwettify(string){
-	var newString = string;
-	var block;
-	var i = 0;
-	var start = 0;
-	var end = 4;
-	if(newString !== undefined)
-	{
-		newString = "";
-		while(i < 8)
-		{
-			block = string.substring(start,end);
-			if(i % 4 === 0)
-			{
-				newString += " ";
-			}
-
-			newString += block;
-
-			start += 4;
-			end += 4;
-			i++;
-		}
-
-		return newString;
-	}
-	return newString;
-}
-
 function binary_to_hex(string)
 {
 	var block;
@@ -164,7 +135,7 @@ function save_register_values()
 	for(var i = 1; i <= 31; i++)
 	{
 		Rstring = "R".concat(i.toString());
-		R[i-1] = document.getElementById(Rstring).value.replace(/\s+/g, '');
+		R[i] = document.getElementById(Rstring).value.replace(/\s+/g, '');
 	}
 	// alert(binary_to_decimal(R[30]));
 }
@@ -544,6 +515,7 @@ function load()
 	
 	// execute instructions after parsing
 	execute_mips_code(listofInstructions);
+	opcode();
 	
 }
 
@@ -647,6 +619,8 @@ function execute_mips_code(listofInstructions){
 				newOperation.RT = currentInstr.registersUsed[1];
 				newOperation.preOp = currentInstr.registersUsed[2];
 				R[newOperation.preOp] = perform_OR(R[newOperation.RS],R[newOperation.RT]);
+				var regDiv = document.getElementById('R'+newOperation.preOp);
+				regDiv.value = binary_to_hex(R[newOperation.preOp]);
 				newOperation.postOp = R[newOperation.preOp];
 				executionOutput.push(newOperation);
 				currentPC += 4;
@@ -788,30 +762,30 @@ function display_pipeline_window()
 			{
 				case "" : 
 					instructionList[i].currentState = "IF";
-					do_IF(currentPC);
+					// do_IF(currentPC);
 
 					break;
 				case "IF": 
 					instructionList[i].currentState = "ID";
 
-					do_ID();
+					// do_ID();
 
 					break;
 				case "ID": 
 					instructionList[i].currentState = "EX"; 
 
-					do_EX();
+					// do_EX();
 
 					break;
 				case "EX": 
 					instructionList[i].currentState = "MEM"; 
 
-					do_MEM();
+					// do_MEM();
 
 					break;
 				case "MEM": 
 					instructionList[i].currentState = "WB"; 
-					do_WB();
+					// do_WB();
 
 					break;
 				case "WB": 
