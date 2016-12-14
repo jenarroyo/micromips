@@ -682,13 +682,26 @@ function display_pipeline_window()
 	// var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
 
  	// pipelineWindow.document.clear();
+<<<<<<< HEAD
+ 	var div = document.getElementById('panel_pipeline');
+	var instructionList = listofInstructions;
+	var currentExecutionOutput = executionOutput;
+	var currentPC = 0;
+||||||| merged common ancestors
+ 	var div = document.getElementById('panel_pipeline');
+	var instr = listofInstructions;
+	var currentop = executionOutput;
+=======
  	var div = document.getElementById('pipeline-map');
 	var instructionList = listofInstructions;
 	var currentExecutionOutput = executionOutput;
 	var currentPC = 0;
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 	
 	// TODO: Calculate width of table depending on number of instructions
-	var map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
+	var map = "";
+
+	map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
 	
  	 //displays cycle counts
 	map += "<tr>";
@@ -761,32 +774,79 @@ function display_pipeline_window()
 			switch(instructionList[i].currentState)
 			{
 				case "" : 
+<<<<<<< HEAD
 					instructionList[i].currentState = "IF";
 					// do_IF(currentPC);
 
+||||||| merged common ancestors
+					instr[i].currentState = "IF";
+					IF_ID_IR.value = binary_to_hex(instr[i].binary);
+					IF_ID_NPC.value = pwettify(add_zeroes_left(instr[i].PC, 15));
+					IF_PC.value = IF_ID_NPC.value;
+					
+=======
+					instructionList[i].currentState = "IF";
+					// do_IF(currentPC);
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "IF": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "ID";
 
 					// do_ID();
 
+||||||| merged common ancestors
+					instr[i].currentState = "ID"; 
+=======
+					instructionList[i].currentState = "ID";
+
+					// do_ID();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "ID": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "EX"; 
 
 					// do_EX();
 
+||||||| merged common ancestors
+					instr[i].currentState = "EX"; 
+=======
+					instructionList[i].currentState = "EX"; 
+
+					// do_EX();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "EX": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "MEM"; 
 
 					// do_MEM();
 
+||||||| merged common ancestors
+					instr[i].currentState = "MEM"; 
+=======
+					instructionList[i].currentState = "MEM"; 
+
+					// do_MEM();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "MEM": 
+<<<<<<< HEAD
 					instructionList[i].currentState = "WB"; 
 					// do_WB();
 
+||||||| merged common ancestors
+					instr[i].currentState = "WB"; 
+=======
+					instructionList[i].currentState = "WB"; 
+					// do_WB();
+
+>>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
 					break;
 				case "WB": 
 					instructionList[i].currentState = " "; 
@@ -894,7 +954,7 @@ function display_registers_window()
 	{
 	map += "<tr>";
 	map += "<td width='150px'>" + cycleList[i].IF_instr + "</td>";  //prints the current instruction
-	map += "<td width = '3opx'>" + "PC = " + cycleList[i].PC + "&#10;" + "NPC = " + cycleList[i].NPC  + "</td>";
+	map += "<td width = '30px'>" + "PC = " + cycleList[i].PC + "&#10;" + "NPC = " + cycleList[i].NPC  + "</td>";
 	}
 	map += "</tr>";
 	registerswindow.document.write(map);
