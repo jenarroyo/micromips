@@ -1,41 +1,50 @@
 /** MIPS Cycles */
-function do_IF()
+function do_IF(currentPC)
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
+	var previousCycle = cycleList[cycleList.length - 1];
 	var instr;
 	
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		if(listofInstructions[i].PC = currentPC)
+		if(listofInstructions[i].PC == currentPC)
 		{
 			instr = listofInstructions[i];
 			break;
 		}
 	}
 	
+    if(listofInstructions[i-1] != undefined){
+        var tempRegs = listofInstructions[i-1].registersUsed;
+        var currentRegs = listofInstructions[i].registersUsed;
+
+        if(tempRegs.indexOf(currentRegs[0]) != -1 || tempRegs.indexOf(currentRegs[1]) != -1){
+            stallDataHazard = true;
+        }
+    }
+
 	currentCycle.IF_instr = instr;
 	
 	// IF/ID.IR <- Mem[PC]
 	currentCycle.IF_IR =  binary_to_hex(instr.binary);
 	
 	// IF/ID.NPC, PC <- (if EX/MEM cond {EX/MEM.ALUOutput} else {PC+4}
-	if(currentCycle.EX_cond == "0")
-	{
-		currentCycle.IF_NPC = add_zeroes_left(binary_to_hex(decimal_to_binary(toString(currentPC))),16);
-	} 
-	else
-	{
-		currentCycle.IF_NPC = previousCycle.EX_ALU;
-	}
+	// if(currentCycle.EX_cond == "0")
+	// {
+		currentCycle.IF_NPC = add_zeroes_left(binary_to_hex(decimal_to_binary((currentPC+4).toString(16))),16);
+	// } 
+	// else
+	// {
+	// 	currentCycle.IF_NPC = previousCycle.EX_ALU;
+	// }
 }
 
 function do_ID()
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var instr = previousCrcle.IF_instr;
+	var previousCycle = cycleList[cycleList.length - 1];
+	var instr = previousCycle.IF_instr;
 	
 	var previousIR = previousCycle.IF_IR;
-	var binaryofIR = currentCycle.IF_instr.binary;
+	var binaryOfIR = currentCycle.IF_instr.binary;
 	
 	// ID/EX.A <- REG[6..10]; 
     currentCycle.ID_A += parseInt(binaryOfIR.substring(6, 10),2);
@@ -56,8 +65,8 @@ function do_ID()
 
 function do_EX()
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var EX_instr = previousCrcle.ID_instr;
+	var previousCycle = cycleList[cycleList.length - 1];
+	var EX_instr = previousCycle.ID_instr;
 	
 	currentCycle.EX_instr = EX_instr;
 	
@@ -155,8 +164,8 @@ function do_EX()
 
 function do_MEM()
 {
-	var previousCycle = cycleList[cycleList.length() - 1];
-	var MEM_instr = previousCrcle.EX_instr;
+	var previousCycle = cycleList[cycleList.length - 1];
+	var MEM_instr = previousCycle.EX_instr;
 	currentCycle.MEM_instr = MEM_instr;
 	
 	if(MEM_instr.MIPSOperation == "ALU")
@@ -188,7 +197,7 @@ function do_MEM()
 
 function do_WB()
 {
-    var previousCycle = cycleList[cycleList.length() - 1];
+    var previousCycle = cycleList[cycleList.length - 1];
     var WB_instr = previousCycle.MEM_instr;
     currentCycle.WB_instr = WB_instr;
     
