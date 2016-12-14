@@ -16,7 +16,7 @@ body {
 	font-size: 12px;
 	font-style: normal;
 	font-variant: normal;
-	/* Jen's:  */background-color: /* #13b6a9; */ #ddd;
+	/* Jen's:  */background-color: /* #13b6a9; */ #fff;
 	/* Justin's: background-color: #9DBDC6; */
 	/* background: none; */
 }
@@ -67,7 +67,6 @@ text-align: left;
 	height: 250px;
 	overflow-y: scroll;
 	border: 1px solid #333;
-	border-radius: 5px;
 	padding-right: none !important;
 	/*background-color: #ebebeb;*/
 }
@@ -105,5 +104,41 @@ text-align: left;
 	height: 100px;
 }
 #mips-opcodes-area{
+	/*background-color: #ddd;*/
+	padding-top: 10px;
+	padding-left: 10px;
+}
+
+#pipeline-map{
+	padding-top: 20px;
+	padding-left: 20px;
+}
+
+#tbl-pipeline-map{
+	min-width: 450px;
+	min-height: 100px;
+	font-size: 16px;
+	font-weight: 800;
+	border: 1px solid #ccc;
+}
+
+#tbl-pipeline-map td{
+	border: 1px solid #333;
+	min-width: 50px;
+	white-space: nowrap;
+}
+
+.tbl-pipeline-map-instr{
+	padding-left: 10px;
+	width: 250px;
+}
+
+.empty-cell{
 	background-color: #ddd;
 }
+
+.opcodes{
+	font-size: 16px;
+	font-weight:;
+}
+

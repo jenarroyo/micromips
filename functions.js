@@ -204,11 +204,11 @@ function load()
 	var lines = text.split(/\r\n|\r|\n/g); //as if i figured this out by myself... (JG: Did you? :>)
 	var buffer = new Array();
 	var instruction = new Array();
-	var currentPC = 0;
+	var currentPC = 1000;
 	var isValidSyntax = true;
 	var current = "";
 	
-	logsDiv.value += "[INFO] (Code Analysis) In Progress.\n";
+	append_to_logs("[INFO] (Code Analysis) In Progress.\n");
 	
 	// house keeping: flush previous parsing
 	while(currentCycle.length)
@@ -256,7 +256,7 @@ function load()
 		}
 		currentPC += 4;
 	}
-	currentPC = 0; // reset counter
+	currentPC = 1000; // reset counter
 
 
 	// once all instructions are successfully parsed, get instructions and type of each
@@ -508,10 +508,10 @@ function load()
 	} 
 	else 
 	{
-		logsDiv.value += "[INFO] (Code Analysis) Done. Nothing else to parse.\n";
+		append_to_logs("[INFO] (Code Analysis) Done. Nothing else to parse.\n");
 	}
 	//alert("listofInstructions.length : " + listofInstructions.length);
-	logsDiv.value += "[INFO] Successfully parsed "+ listofInstructions.length + " lines of instructions \n";
+	append_to_logs("[SUCCESS] Successfully parsed "+ listofInstructions.length + " lines of instructions. \n");
 	
 	// execute instructions after parsing
 	execute_mips_code(listofInstructions);
@@ -521,11 +521,11 @@ function load()
 
 // function to execute code (Run, Forrest, Run!)
 function execute_mips_code(listofInstructions){
-	var currentPC = 0;
+	var currentPC = 1000;
 	var i = 0;
 	var stillRunning = true; // Run, Forrest, Run!
 	
-	while(currentPC == 0 || currentPC <= listofInstructions[listofInstructions.length - 1].PC)
+	while(currentPC == 1000 || currentPC <= listofInstructions[listofInstructions.length - 1].PC)
 	{
 		var currentInstr = listofInstructions[i];
 		var newOperation = new ExecutionOutput();
@@ -619,8 +619,9 @@ function execute_mips_code(listofInstructions){
 				newOperation.RT = currentInstr.registersUsed[1];
 				newOperation.preOp = currentInstr.registersUsed[2];
 				R[newOperation.preOp] = perform_OR(R[newOperation.RS],R[newOperation.RT]);
-				var regDiv = document.getElementById('R'+newOperation.preOp);
-				regDiv.value = binary_to_hex(R[newOperation.preOp]);
+				// TODO:
+				// var regDiv = document.getElementById('R'+newOperation.preOp);
+				// regDiv.value = binary_to_hex(R[newOperation.preOp]);
 				newOperation.postOp = R[newOperation.preOp];
 				executionOutput.push(newOperation);
 				currentPC += 4;
@@ -666,42 +667,38 @@ function execute_mips_code(listofInstructions){
 // former opcode window display
 function opcode()
 {
+	$('#mips-opcodes-area').append('<tr class="opcodes"><td style="min-width:20px; padding-left: 10px;">Address</td> '
+		+ '<td  style="min-width:50px; padding-left: 10px;">Instruction'
+		+  '</td><td  style="min-width:80px; padding-left: 10px;">OpCode (Hex)'
+			// +  '</td><td  style="width:100px;"> '
+		+ '</td></tr>');
 	for(var i = 0; i < listofInstructions.length; i++)
 	{
-		$('#mips-opcodes-area').append('<tr><td style="width:20px;"> ' + listofInstructions[i].PC 
-			+ '</td><td  style="width:50px;"> ' + listofInstructions[i].operation 
-			+  '</td><td  style="width:80px;"> ' + binary_to_hex(listofInstructions[i].binary) 
+		$('#mips-opcodes-area').append('<tr class="opcodes"><td style="min-width:20px; padding-left: 10px;"> ' + listofInstructions[i].PC 
+			+ '</td><td  style="min-width:50px; padding-left: 10px;"> ' + listofInstructions[i].operation 
+			+  '</td><td  style="min-width:80px; padding-left: 10px;"> ' + binary_to_hex(listofInstructions[i].binary) 
 			// +  '</td><td  style="width:100px;"> ' + listofInstructions[i].binary
 			+ '</td></tr>');
 	}
+
+	append_to_logs('[SUCCESS] Done computing for OpCodes in Hex.\n');
 }
 
 // former pipeline
 function display_pipeline_window()
 {
+	append_to_logs('[INFO] Currently generatng Pipeline Map.\n');
 	// var pipelineWindow = window.open("", "PipelineWindow", "width=700, height=400");
-
  	// pipelineWindow.document.clear();
-<<<<<<< HEAD
- 	var div = document.getElementById('panel_pipeline');
-	var instructionList = listofInstructions;
-	var currentExecutionOutput = executionOutput;
-	var currentPC = 0;
-||||||| merged common ancestors
- 	var div = document.getElementById('panel_pipeline');
-	var instr = listofInstructions;
-	var currentop = executionOutput;
-=======
  	var div = document.getElementById('pipeline-map');
 	var instructionList = listofInstructions;
 	var currentExecutionOutput = executionOutput;
-	var currentPC = 0;
->>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
+	var currentPC = 1000;
 	
 	// TODO: Calculate width of table depending on number of instructions
 	var map = "";
 
-	map = "<table border = '1' width='500' height='100' style='font-size: 18px; font-weight: 800;'>";
+	map = "<table id='tbl-pipeline-map'>";
 	
  	 //displays cycle counts
 	map += "<tr>";
@@ -711,7 +708,11 @@ function display_pipeline_window()
 	}*/
  	for(var h = 0; h < cellcount ; h++)
  	{
-    	map += "<td>" + h + "</td>";
+ 		if (h==0){
+    		map += "<td class='text-center tbl-pipeline-map-instr'>List of Instructions</td>";
+ 		} else{
+ 			map += "<td class='text-center'>" + h + "</td>";
+ 		}
   	}
   	map += "</tr>"
 
@@ -721,8 +722,7 @@ function display_pipeline_window()
 	while(i < listofInstructions.length)
 	{
 		map += "<tr>";
-		
-		map += "<td width ='450px'>" + cycleList[i].IF_instr + "</td>";
+		map += "<td class='tbl-pipeline-map-instr'>" + cycleList[i].IF_instr + "</td>";
 		
 		
 		console.log("Cell Count : " + cellcount);
@@ -734,7 +734,7 @@ function display_pipeline_window()
       		{
         		if(a<=i)
         		{
-          			map += "<td width = '30px'>" + "&nbsp; " + "</td>";
+          			map += "<td class='empty-cell'>" + "&nbsp; " + "</td>";
 				}
      		}
   		}
@@ -771,82 +771,38 @@ function display_pipeline_window()
 
 		for(var j=0; j < cellcount - decreasecells; j++)
 		{
+			var couleurr = "";
 			switch(instructionList[i].currentState)
 			{
 				case "" : 
-<<<<<<< HEAD
 					instructionList[i].currentState = "IF";
-					// do_IF(currentPC);
+					// TODO: do_IF(currentPC);
 
-||||||| merged common ancestors
-					instr[i].currentState = "IF";
-					IF_ID_IR.value = binary_to_hex(instr[i].binary);
-					IF_ID_NPC.value = pwettify(add_zeroes_left(instr[i].PC, 15));
-					IF_PC.value = IF_ID_NPC.value;
-					
-=======
-					instructionList[i].currentState = "IF";
-					// do_IF(currentPC);
-
->>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
+					couleurr = "bg-primary"
 					break;
 				case "IF": 
-<<<<<<< HEAD
 					instructionList[i].currentState = "ID";
+					// TODO: do_ID();
 
-					// do_ID();
-
-||||||| merged common ancestors
-					instr[i].currentState = "ID"; 
-=======
-					instructionList[i].currentState = "ID";
-
-					// do_ID();
-
->>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
+					couleurr = "bg-warning"
 					break;
 				case "ID": 
-<<<<<<< HEAD
 					instructionList[i].currentState = "EX"; 
+					// TODO: do_EX();
 
-					// do_EX();
-
-||||||| merged common ancestors
-					instr[i].currentState = "EX"; 
-=======
-					instructionList[i].currentState = "EX"; 
-
-					// do_EX();
-
->>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
+					couleurr = "bg-danger"
 					break;
 				case "EX": 
-<<<<<<< HEAD
 					instructionList[i].currentState = "MEM"; 
+					// TODO: do_MEM();
 
-					// do_MEM();
-
-||||||| merged common ancestors
-					instr[i].currentState = "MEM"; 
-=======
-					instructionList[i].currentState = "MEM"; 
-
-					// do_MEM();
-
->>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
+					couleurr = "bg-info"
 					break;
 				case "MEM": 
-<<<<<<< HEAD
 					instructionList[i].currentState = "WB"; 
-					// do_WB();
+					// TODO: do_WB();
 
-||||||| merged common ancestors
-					instr[i].currentState = "WB"; 
-=======
-					instructionList[i].currentState = "WB"; 
-					// do_WB();
-
->>>>>>> 1b7f8eb9896779fc7290c80b1713ba50f5f51faa
+					couleurr = "bg-success"
 					break;
 				case "WB": 
 					instructionList[i].currentState = " "; 
@@ -855,9 +811,11 @@ function display_pipeline_window()
 				default: break;
 			}
 
-			map += "<td width = '30px'>" + instructionList[i].currentState + "</td>";
-
-
+			if(instructionList[i].currentState === " "){
+				map += "<td class='text-center empty-cell'>" + instructionList[i].currentState + "</td>";
+			}else{
+				map += "<td class='text-center "+couleurr+"'>" + instructionList[i].currentState + "</td>";
+			}
 		}
 		
 		if(currentExecutionOutput[i] !== undefined && currentExecutionOutput[i].op !== undefined){
@@ -876,7 +834,17 @@ function display_pipeline_window()
 	}
 	
 	div.innerHTML=map;
-	// pipelineWindow.document.write(map);
+	append_to_logs('[SUCCESS] Pipeline Map is generated.\n');
+}
+
+function append_to_logs(messageToDisplay){
+	if(messageToDisplay !== null || messageToDisplay !== undefined){
+		var logsArea = $('#mips-log-area');
+		var currentText = logsArea.val() + messageToDisplay;
+
+		logsArea.focus().val("").val(currentText);
+		logsArea.scrollTop(logsArea[0].scrollHeight);
+	}
 }
 
 function display_output_window()
@@ -934,7 +902,7 @@ function display_output_window()
 	logsDiv.value = "";
 }
 
-function display_registers_window()
+/*function display_registers_window()
 {
 	var registerswindow = window.open("", "RegistersWindow", "width=700, height=400");
 	var instr = listofInstructions;
@@ -958,7 +926,7 @@ function display_registers_window()
 	}
 	map += "</tr>";
 	registerswindow.document.write(map);
-}
+}*/
 
 function clear_log()
 {
@@ -968,11 +936,15 @@ function clear_log()
 
 function clear_opcode_window(){
 	var opcodeDiv = document.getElementById('mips-opcodes-area');
-	opcodeDiv.value = "";
+	opcodeDiv.innerHTML = "";
 }
 /** End of Display Functions */
 
 function goto_data(){
     input_search = document.getElementById("input-search").value;
-    document.getElementById(input_search).focus();
+    if(document.getElementById(input_search) !== null){
+    	document.getElementById(input_search).focus();
+    }else{
+    	alert("[Friendly Info]\n\n Memory address '"+input_search+"' not found.");
+    }
 }
