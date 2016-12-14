@@ -16,7 +16,7 @@ body {
 	font-size: 12px;
 	font-style: normal;
 	font-variant: normal;
-	/* Jen's:  */background-color: /* #13b6a9; */ #229E8D;
+	/* Jen's:  */background-color: /* #13b6a9; */ #ddd;
 	/* Justin's: background-color: #9DBDC6; */
 	/* background: none; */
 }
@@ -64,19 +64,20 @@ text-align: left;
 
 /* MIPS RELATED CLASSES */
 .segment {
-	height: 350px;
+	height: 250px;
 	overflow-y: scroll;
-	/*border: 1px solid #333;*/
+	border: 1px solid #333;
+	border-radius: 5px;
 	padding-right: none !important;
 	/*background-color: #ebebeb;*/
 }
 
 #codearea{
-	min-height: 350px;
+	min-height: 250px;
 	resize: none;
 }
 #logarea{
-	min-height:350px;
+	min-height:80px;
 }
 .controls{
 	text-align: center;
@@ -101,7 +102,7 @@ text-align: left;
 #mips-log-area{
 	background-color: #333;
 	color: #dff0d8;
-	height: 280px;
+	height: 100px;
 }
 #mips-opcodes-area{
 	background-color: #ddd;
